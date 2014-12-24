@@ -1,0 +1,21 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Toggle iex2'
+      'command': 'iex2:toggle'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'iex2'
+      'submenu': [
+
+        {'label': 'Open New Terminal in New Tab', 'command': 'iex2:open'}
+
+      ]
+    ]
+  }
+]
