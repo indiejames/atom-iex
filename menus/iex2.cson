@@ -13,7 +13,7 @@
       'label': 'iex2'
       'submenu': [
 
-        {'label': 'Open New Terminal in New Tab', 'command': 'iex2:open'}
+        {'label': 'Open Iex session in New Tab', 'command': 'iex2:open'}
 
       ]
     ]
