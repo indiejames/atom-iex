@@ -41,9 +41,9 @@ module.exports = Iex2 =
   newIex: ->
     console.log "NEW IEX"
     termView = @createTermView()
-    #pane = atom.workspace.getActivePane()
-    #item = pane.addItem termView
-    #pane.activateItem item
+    pane = atom.workspace.getActivePane()
+    item = pane.addItem termView
+    pane.activateItem item
 
   handleRemoveTerm: (termView)->
     @termViews.splice @termViews.indexOf(termView), 1
