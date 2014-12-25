@@ -147,5 +147,4 @@ class TermView extends View
       parentPane.removeItem parentPane.activeItem
     @detach()
 
-
 module.exports = TermView
