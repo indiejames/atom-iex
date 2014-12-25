@@ -46,8 +46,8 @@ class TermView extends View
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
     console.log "INIT"
     @ptyProcess = @forkPtyProcess args
-    @ptyProcess.on 'iex:data', (data) => @term.write data
-    @ptyProcess.on 'iex:exit', (data) => @destroy()
+    @ptyProcess.on 'iex2:data', (data) => @term.write data
+    @ptyProcess.on 'iex2:exit', (data) => @destroy()
 
     colorsArray = (colorCode for colorName, colorCode of colors)
     @term = term = new Terminal {
@@ -86,21 +86,11 @@ class TermView extends View
     titleTemplate = @opts.titleTemplate or "({{ bashName }})"
     renderTemplate titleTemplate, @vars
 
-  resizeToPane: ->
-    {cols, rows} = @getDimensions()
-    return unless cols > 0 and rows > 0
-    return unless @term
-    return if @term.rows is rows and @term.cols is cols
-
-    @resize cols, rows
-    @term.resize cols, rows
-    atom.workspaceView.getActivePaneView().css overflow: 'visible'
-
   attachEvents: ->
     console.log "ATTACHING EVENTS"
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
-    @command "iex:paste", => @paste()
+    @command "iex2:paste", => @paste()
     console.log "DONE ATTACHING EVENTS"
 
   paste: ->
@@ -124,6 +114,15 @@ class TermView extends View
     @term.element.focus()
     @term.focus()
 
+  resizeToPane: ->
+    {cols, rows} = @getDimensions()
+    return unless cols > 0 and rows > 0
+    return unless @term
+    return if @term.rows is rows and @term.cols is cols
+
+    @resize cols, rows
+    @term.resize cols, rows
+    atom.workspaceView.getActivePaneView().css overflow: 'visible'
 
   getDimensions: ->
     fakeCol = $("<span id='colSize'>&nbsp;</span>").css visibility: 'hidden'

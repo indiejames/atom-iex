@@ -27,10 +27,10 @@ module.exports = (ptyCwd, args) ->
 
   console.log "PTY4"
 
-  ptyProcess.on 'data', (data) -> emit('term2:data', data)
+  ptyProcess.on 'data', (data) -> emit('iex2:data', data)
   console.log "PTY5"
   ptyProcess.on 'exit', ->
-    emit('term2:exit')
+    emit('iex2:exit')
     callback()
 
   process.on 'message', ({event, cols, rows, text}={}) ->
