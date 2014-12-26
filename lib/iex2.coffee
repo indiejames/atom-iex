@@ -1,7 +1,8 @@
 {CompositeDisposable} = require 'atom'
 path = require 'path'
 TermView = require './TermView'
-PTY = require 'pty.js'
+
+{SHELL, HOME}=process.env
 
 capitalize = (str)-> str[0].toUpperCase() + str[1..].toLowerCase()
 
@@ -9,6 +10,15 @@ module.exports = Iex2 =
   subscriptions: null
   termViews: []
   config:
+    scrollback:
+      type: 'integer'
+      default: 1000
+    cursorBlink:
+      type: 'boolean'
+      default: yes
+    openPanesInSameSplit:
+      type: 'boolean'
+      default: no
     colors:
       type: 'object'
       properties:
@@ -90,11 +100,10 @@ module.exports = Iex2 =
   createTermView:->
       opts =
         runCommand    : null
-        shellArguments: "--init-file /Users/jnorton/.bash_profile"
+        shellArguments: "-c iex"
         titleTemplate : 'iex'
-        cursorBlink   : yes
+        cursorBlink   : atom.config.get('iex2.cursorBlink')
         colors        : @getColors()
-        #colors        : {}
 
       termView = new TermView opts
       console.log "CREATE"
