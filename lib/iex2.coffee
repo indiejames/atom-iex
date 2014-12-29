@@ -9,6 +9,7 @@ capitalize = (str)-> str[0].toUpperCase() + str[1..].toLowerCase()
 module.exports = Iex2 =
   subscriptions: null
   termViews: []
+  focusedTerminal: off
   config:
     scrollback:
       type: 'integer'
@@ -77,8 +78,10 @@ module.exports = Iex2 =
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
-    # Register command that toggles this view
+    # Register command that opens the iex view
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex2:open': => @newIex()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex2:pipe': => @pipeTerm()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex2:echo': => @echo()
 
   deactivate: ->
     @subscriptions.dispose()
@@ -100,17 +103,23 @@ module.exports = Iex2 =
   createTermView:->
       opts =
         runCommand    : null
-        shellArguments: "-c iex"
-        titleTemplate : 'iex'
+        shellArguments: "-c 'iex -S mix'"
+        titleTemplate : 'IEx'
         cursorBlink   : atom.config.get('iex2.cursorBlink')
         colors        : @getColors()
 
       termView = new TermView opts
       console.log "CREATE"
       termView.on 'remove', @handleRemoveTerm.bind this
+      termView.on "click", => @focusedTerminal = termView
+      @focusedTerminal = termView
+      #@subscriptions.add atom.commands.add 'atom-workspace', 'iex2:open': => @newIex()
 
       @termViews.push? termView
       termView
+
+  echo: ->
+    console.log "ECHO"
 
   newIex: ->
     console.log "NEW IEX"
@@ -119,7 +128,33 @@ module.exports = Iex2 =
     item = pane.addItem termView
     pane.activateItem item
 
+  pipeTerm: ->
+    console.log "PIPE"
+    editor = atom.workspace.getActiveEditor()
+    action = 'selection'
+    stream = switch action
+      when 'path'
+        editor.getBuffer().file.path
+      when 'selection'
+        editor.getSelectedText()
+
+    if stream and @focusedTerminal
+      if Array.isArray @focusedTerminal
+        [pane, item] = @focusedTerminal
+        pane.activateItem item
+      else
+        item = @focusedTerminal
+
+      text = stream.trim().concat("\n")
+      item.term.send(text)
+      #item.term.write stream.trim()
+      item.term.focus()
+
   handleRemoveTerm: (termView)->
     @termViews.splice @termViews.indexOf(termView), 1
+
+  deactivate:->
+      @termViews.forEach (view)-> view.deactivate()
+
 
   #serialize: ->

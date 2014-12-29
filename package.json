@@ -3,9 +3,6 @@
   "main": "./lib/iex2",
   "version": "0.0.1",
   "description": "A short description of your package",
-  "activationEvents": [
-    "iex2:open"
-  ],
   "repository": "https://github.com/atom/iex2",
   "license": "MIT",
   "engines": {

@@ -4,8 +4,10 @@ pty = require 'pty.js'
 console.log "REQUIRED PTY.JS"
 
 module.exports = (ptyCwd, args) ->
-  console.log "PTY1"
   callback = @async()
+  args = ["-c", "iex -S mix"]
+  console.log("ARGS...")
+  console.log(args)
   if process.platform is 'win32'
     shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
 
@@ -18,6 +20,8 @@ module.exports = (ptyCwd, args) ->
     cols = 80
     rows = 30
     console.log "PTY3"
+  console.log "SHELL..."
+  console.log shell
   ptyProcess = pty.fork shell, args,
     name: 'xterm-256color'
     cols: cols
@@ -25,10 +29,7 @@ module.exports = (ptyCwd, args) ->
     cwd: ptyCwd
     env: process.env
 
-  console.log "PTY4"
-
   ptyProcess.on 'data', (data) -> emit('iex2:data', data)
-  console.log "PTY5"
   ptyProcess.on 'exit', ->
     emit('iex2:exit')
     callback()

@@ -25,17 +25,14 @@ class TermView extends View
     @div class: 'iex2'
 
   constructor: (@opts={})->
-    console.log "CONS"
     opts.shell = process.env.SHELL or 'bash'
     opts.shellArguments or= ''
 
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
     opts.cwd = opts.cwd or atom.project.getPath() or editorPath or process.env.HOME
-    console.log "CONS2"
     super
 
   forkPtyProcess: (args=[])->
-    console.log
     processPath = require.resolve './pty'
     path = atom.project.getPath() ? '~'
     Task.once processPath, fs.absolute(path), args
@@ -44,7 +41,7 @@ class TermView extends View
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
-    console.log "INIT"
+    args = ["-c 'iex -S mix'"]
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex2:data', (data) => @term.write data
     @ptyProcess.on 'iex2:exit', (data) => @destroy()
@@ -64,10 +61,8 @@ class TermView extends View
 
     @input "#{runCommand}#{os.EOL}" if runCommand
     term.focus()
-    console.log "INIT2"
     @attachEvents()
     @resizeToPane()
-    console.log "INIT3"
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
