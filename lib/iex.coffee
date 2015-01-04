@@ -6,7 +6,7 @@ TermView = require './TermView'
 
 capitalize = (str)-> str[0].toUpperCase() + str[1..].toLowerCase()
 
-module.exports = Iex2 =
+module.exports = Iex =
   subscriptions: null
   termViews: []
   focusedTerminal: off
@@ -73,15 +73,15 @@ module.exports = Iex2 =
           default: '#eeeeec'
 
   activate: (state) ->
-    console.log "activate iex2"
+    console.log "activate iex"
 
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
     # Register command that opens the iex view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex2:open': => @newIex()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex2:pipe': => @pipeTerm()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex2:echo': => @echo()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeTerm()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:echo': => @echo()
 
   deactivate: ->
     @subscriptions.dispose()
@@ -92,7 +92,7 @@ module.exports = Iex2 =
       normalBlue, normalPurple, normalCyan, normalWhite
       brightBlack, brightRed, brightGreen, brightYellow
       brightBlue, brightPurple, brightCyan, brightWhite
-    } = atom.config.get('iex2.colors')
+    } = atom.config.get('iex.colors')
     [
       normalBlack, normalRed, normalGreen, normalYellow
       normalBlue, normalPurple, normalCyan, normalWhite
@@ -105,7 +105,7 @@ module.exports = Iex2 =
         runCommand    : null
         shellArguments: "-c 'iex -S mix'"
         titleTemplate : 'IEx'
-        cursorBlink   : atom.config.get('iex2.cursorBlink')
+        cursorBlink   : atom.config.get('iex.cursorBlink')
         colors        : @getColors()
 
       termView = new TermView opts
@@ -113,7 +113,7 @@ module.exports = Iex2 =
       termView.on 'remove', @handleRemoveTerm.bind this
       termView.on "click", => @focusedTerminal = termView
       @focusedTerminal = termView
-      #@subscriptions.add atom.commands.add 'atom-workspace', 'iex2:open': => @newIex()
+      #@subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
 
       @termViews.push? termView
       termView

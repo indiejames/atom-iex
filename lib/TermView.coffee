@@ -22,7 +22,7 @@ renderTemplate = (template, data)->
 class TermView extends View
 
   @content: ->
-    @div class: 'iex2'
+    @div class: 'iex'
 
   constructor: (@opts={})->
     opts.shell = process.env.SHELL or 'bash'
@@ -43,8 +43,8 @@ class TermView extends View
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
     args = ["-c 'iex -S mix'"]
     @ptyProcess = @forkPtyProcess args
-    @ptyProcess.on 'iex2:data', (data) => @term.write data
-    @ptyProcess.on 'iex2:exit', (data) => @destroy()
+    @ptyProcess.on 'iex:data', (data) => @term.write data
+    @ptyProcess.on 'iex:exit', (data) => @destroy()
 
     colorsArray = (colorCode for colorName, colorCode of colors)
     @term = term = new Terminal {
@@ -85,7 +85,7 @@ class TermView extends View
     console.log "ATTACHING EVENTS"
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
-    @command "iex2:paste", => @paste()
+    @command "iex:paste", => @paste()
     console.log "DONE ATTACHING EVENTS"
 
   paste: ->

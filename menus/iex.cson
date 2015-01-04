@@ -2,18 +2,18 @@
 'context-menu':
   'atom-text-editor': [
     {
-      'label': 'Toggle iex2'
-      'command': 'iex2:toggle'
+      'label': 'Toggle iex'
+      'command': 'iex:toggle'
     }
   ]
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'iex2'
+      'label': 'iex'
       'submenu': [
 
-        {'label': 'Open Iex session in New Tab', 'command': 'iex2:open'}
+        {'label': 'Open Iex session in New Tab', 'command': 'iex:open'}
 
       ]
     ]

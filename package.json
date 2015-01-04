@@ -1,9 +1,9 @@
 {
-  "name": "iex2",
-  "main": "./lib/iex2",
+  "name": "iex",
+  "main": "./lib/iex",
   "version": "0.0.1",
   "description": "A short description of your package",
-  "repository": "https://github.com/atom/iex2",
+  "repository": "https://github.com/indiejames/atom-iex",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"

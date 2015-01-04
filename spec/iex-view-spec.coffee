@@ -1,5 +1,5 @@
-Iex2View = require '../lib/iex2-view'
+IexView = require '../lib/iex-view'
 
-describe "Iex2View", ->
+describe "IexView", ->
   it "has one valid test", ->
     expect("life").toBe "easy"

@@ -1,4 +1,4 @@
-# iex2 package
+# iex package
 
 A short description of your package.
 

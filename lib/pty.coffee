@@ -29,9 +29,9 @@ module.exports = (ptyCwd, args) ->
     cwd: ptyCwd
     env: process.env
 
-  ptyProcess.on 'data', (data) -> emit('iex2:data', data)
+  ptyProcess.on 'data', (data) -> emit('iex:data', data)
   ptyProcess.on 'exit', ->
-    emit('iex2:exit')
+    emit('iex:exit')
     callback()
 
   process.on 'message', ({event, cols, rows, text}={}) ->

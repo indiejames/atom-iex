@@ -8,5 +8,5 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 'atom-workspace':
-  'cmd-alt-l': 'iex2:open'
-  'cmd-alt-b': 'iex2:pipe'
+  'cmd-alt-l': 'iex:open'
+  'cmd-alt-b': 'iex:pipe'
