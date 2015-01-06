@@ -42,8 +42,7 @@ class TermView extends View
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = ["-c", "iex"]
     projectPath = atom.project.path
-    fileExists = fs.existsSync(path.join(projectPath, 'mix.exs'))
-    if fileExists
+    if fs.existsSync(path.join(projectPath, 'mix.exs'))
       args = ["-c", "iex -S mix"]
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data
