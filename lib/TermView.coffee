@@ -34,15 +34,16 @@ class TermView extends View
 
   forkPtyProcess: (args=[])->
     processPath = require.resolve './pty'
-    path = atom.project.getPath() ? '~'
-    Task.once processPath, fs.absolute(path), args
+    projectPath = atom.project.getPath() ? '~'
+    Task.once processPath, fs.absolute(projectPath), args
 
   initialize: (@state)->
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = ["-c", "iex"]
-    projectPath = atom.project.path
-    if fs.existsSync(path.join(projectPath, 'mix.exs'))
+    projectPath = atom.project.getPath()
+    fileExists = fs.existsSync(path.join(projectPath, 'mix.exs'))
+    if fileExists
       args = ["-c", "iex -S mix"]
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data

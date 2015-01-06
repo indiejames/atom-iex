@@ -102,9 +102,6 @@ module.exports = Iex =
 
   createTermView:->
     shellArguments = "-c 'iex'"
-    if path.existsSync("./mix.exs")
-      shellArguments = "-c 'iex -S mix'"
-      shellArguments = "-c 'iex'"
     opts =
       runCommand    : null
       shellArguments: shellArguments
