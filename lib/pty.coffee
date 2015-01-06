@@ -5,7 +5,7 @@ console.log "REQUIRED PTY.JS"
 
 module.exports = (ptyCwd, args) ->
   callback = @async()
-  args = ["-c", "iex -S mix"]
+  #args = ["-c", "iex -S mix"]
   console.log("ARGS...")
   console.log(args)
   if process.platform is 'win32'

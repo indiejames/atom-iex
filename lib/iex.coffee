@@ -101,22 +101,26 @@ module.exports = Iex =
     ]
 
   createTermView:->
-      opts =
-        runCommand    : null
-        shellArguments: "-c 'iex -S mix'"
-        titleTemplate : 'IEx'
-        cursorBlink   : atom.config.get('iex.cursorBlink')
-        colors        : @getColors()
+    shellArguments = "-c 'iex'"
+    if path.existsSync("./mix.exs")
+      shellArguments = "-c 'iex -S mix'"
+      shellArguments = "-c 'iex'"
+    opts =
+      runCommand    : null
+      shellArguments: shellArguments
+      titleTemplate : 'IEx'
+      cursorBlink   : atom.config.get('iex.cursorBlink')
+      colors        : @getColors()
 
-      termView = new TermView opts
-      console.log "CREATE"
-      termView.on 'remove', @handleRemoveTerm.bind this
-      termView.on "click", => @focusedTerminal = termView
-      @focusedTerminal = termView
-      #@subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
+    termView = new TermView opts
+    console.log "CREATE"
+    termView.on 'remove', @handleRemoveTerm.bind this
+    termView.on "click", => @focusedTerminal = termView
+    @focusedTerminal = termView
+    #@subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
 
-      @termViews.push? termView
-      termView
+    @termViews.push? termView
+    termView
 
   echo: ->
     console.log "ECHO"

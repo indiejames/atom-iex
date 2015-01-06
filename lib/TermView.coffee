@@ -40,8 +40,11 @@ class TermView extends View
   initialize: (@state)->
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
-    args = shellArguments.split(/\s+/g).filter (arg)-> arg
-    args = ["-c 'iex -S mix'"]
+    args = ["-c", "iex"]
+    projectPath = atom.project.path
+    fileExists = fs.existsSync(path.join(projectPath, 'mix.exs'))
+    if fileExists
+      args = ["-c", "iex -S mix"]
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data
     @ptyProcess.on 'iex:exit', (data) => @destroy()
