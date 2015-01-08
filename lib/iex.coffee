@@ -78,10 +78,9 @@ module.exports = Iex =
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
-    # Register command that opens the iex view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeTerm()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:echo': => @echo()
+    # Register commands
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIEx()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeIEx()
 
   deactivate: ->
     @subscriptions.dispose()
@@ -119,17 +118,14 @@ module.exports = Iex =
     @termViews.push? termView
     termView
 
-  echo: ->
-    console.log "ECHO"
-
-  newIex: ->
+  newIEx: ->
     console.log "NEW IEX"
     termView = @createTermView()
     pane = atom.workspace.getActivePane()
     item = pane.addItem termView
     pane.activateItem item
 
-  pipeTerm: ->
+  pipeIEx: ->
     console.log "PIPE"
     editor = atom.workspace.getActiveEditor()
     action = 'selection'
