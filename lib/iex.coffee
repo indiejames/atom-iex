@@ -81,6 +81,7 @@ module.exports = Iex =
     # Register commands
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeIEx()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
 
   deactivate: ->
     @subscriptions.dispose()
@@ -117,6 +118,23 @@ module.exports = Iex =
 
     @termViews.push? termView
     termView
+
+  resetIEx: ->
+    editor = atom.workspace
+    text = 'Mix.Task.reenable "compile.elixir";
+    Application.stop(Mix.Project.config[:app]);
+    Mix.Task.run "compile.elixir";
+    Application.start(Mix.Project.config[:app], :permanent)\n'
+    if @focusedTerminal
+      if Array.isArray @focusedTerminal
+        [pane, item] = @focusedTerminal
+        pane.activateItem item
+      else
+        item = @focusedTerminal
+
+      item.term.send(text)
+      #item.term.write stream.trim()
+      item.term.focus()
 
   newIEx: ->
     console.log "NEW IEX"
