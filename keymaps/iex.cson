@@ -10,4 +10,4 @@
 'atom-workspace':
   'cmd-alt-l': 'iex:open'
   'cmd-alt-b': 'iex:pipe'
-  'cmd-alt-r': 'iex:reset'
+  'cmd-alt-e': 'iex:reset'
