@@ -59,6 +59,8 @@ class TermView extends View
 
     term.end = => @destroy()
 
+    term.on "copy", (text)=> @copy(text)
+
     term.on "data", (data)=> @input data
     term.open this.get(0)
 
@@ -89,10 +91,31 @@ class TermView extends View
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
     @command "iex:paste", => @paste()
+    @command "iex:copy", => @copy()
     console.log "DONE ATTACHING EVENTS"
 
   paste: ->
     @input atom.clipboard.read()
+
+  # copy: (text) ->
+  #   console.log "COPYING"
+  #   console.log text
+  #   atom.clipboard.write(text, {})
+
+  copy: ->
+    if  @term._selected  # term.js visual mode selections
+      textarea = @term.getCopyTextarea()
+      text = @term.grabText(
+        @term._selected.x1, @term._selected.x2,
+        @term._selected.y1, @term._selected.y2)
+    else # fallback to DOM-based selections
+      text = @term.context.getSelection().toString()
+      rawText = @term.context.getSelection().toString()
+      rawLines = rawText.split(/\r?\n/g)
+      lines = rawLines.map (line) ->
+        line.replace(/\s/g, " ").trimRight()
+      text = lines.join("\n")
+    atom.clipboard.write text
 
   attachResizeEvents: ->
     setTimeout (=>  @resizeToPane()), 10

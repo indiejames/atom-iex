@@ -1,13 +1,8 @@
 # from atom/terminal to reduce cpu usage
-console.log "PTY0"
 pty = require 'pty.js'
-console.log "REQUIRED PTY.JS"
 
 module.exports = (ptyCwd, args) ->
   callback = @async()
-  #args = ["-c", "iex -S mix"]
-  console.log("ARGS...")
-  console.log(args)
   if process.platform is 'win32'
     shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
 
@@ -15,13 +10,9 @@ module.exports = (ptyCwd, args) ->
     cols = 30
     rows = 80
   else
-    console.log "PTY2"
     shell = process.env.SHELL
     cols = 80
     rows = 30
-    console.log "PTY3"
-  console.log "SHELL..."
-  console.log shell
   ptyProcess = pty.fork shell, args,
     name: 'xterm-256color'
     cols: cols

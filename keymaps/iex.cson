@@ -11,3 +11,8 @@
   'cmd-alt-l': 'iex:open'
   'cmd-alt-b': 'iex:pipe'
   'cmd-alt-e': 'iex:reset'
+
+'.iex':
+  'cmd-v': 'iex:paste'
+  'ctrl-v': 'iex:paste'
+  'cmd-c': 'iex:copy'

@@ -1,11 +1,8 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
-  'atom-text-editor': [
-    {
-      'label': 'Toggle iex'
-      'command': 'iex:toggle'
-    }
-  ]
+  '.IEx':
+    'Copy': 'iex:copy'
+    'Paste': 'iex:paste'
 'menu': [
   {
     'label': 'Packages'
