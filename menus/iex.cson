@@ -10,7 +10,12 @@
       'label': 'iex'
       'submenu': [
 
-        {'label': 'Open Iex session in New Tab', 'command': 'iex:open'}
+        {'label': 'Open IEx session in New Tab', 'command': 'iex:open'}
+        {'label': 'Open IEx session in Bottom Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Open IEx session in Top Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Open IEx session in Right Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Open IEx session in Left Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Run tests', 'command', 'iex:run-tests'}
 
       ]
     ]

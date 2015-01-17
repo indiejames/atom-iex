@@ -79,8 +79,11 @@ module.exports = Iex =
     @subscriptions = new CompositeDisposable
 
     # Register commands
+    ['up', 'right', 'down', 'left'].forEach (direction)=>
+        @subscriptions.add atom.commands.add 'atom-workspace',"iex:open-split-#{direction}", @splitTerm.bind(this, direction)
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeIEx()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:runtests': => @runTests()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
 
   deactivate: ->
@@ -120,7 +123,6 @@ module.exports = Iex =
     termView
 
   resetIEx: ->
-    editor = atom.workspace
     text = 'Mix.Task.reenable "compile.elixir";
     Application.stop(Mix.Project.config[:app]);
     Mix.Task.run "compile.elixir";
@@ -135,6 +137,47 @@ module.exports = Iex =
       item.term.send(text)
       #item.term.write stream.trim()
       item.term.focus()
+
+  runTests: ->
+    console.log "Running tests"
+    text = 'env=Mix.env(:test);
+    Mix.Task.reenable "test";
+    Mix.Tasks.Test.run ["--force"];
+    Mix.env(env)\n'
+    if @focusedTerminal
+      if Array.isArray @focusedTerminal
+        [pane, item] = @focusedTerminal
+        pane.activateItem item
+      else
+        item = @focusedTerminal
+
+      item.term.send(text)
+      #item.term.write stream.trim()
+      item.term.focus()
+
+  splitTerm: (direction)->
+      openPanesInSameSplit = atom.config.get 'iex.openPanesInSameSplit'
+      termView = @createTermView()
+      termView.on "click", => @focusedTerminal = termView
+      direction = capitalize direction
+
+      splitter = =>
+        pane = activePane["split#{direction}"] items: [termView]
+        activePane.termSplits[direction] = pane
+        @focusedTerminal = [pane, pane.items[0]]
+
+      activePane = atom.workspace.getActivePane()
+      activePane.termSplits or= {}
+      if openPanesInSameSplit
+        if activePane.termSplits[direction] and activePane.termSplits[direction].items.length > 0
+          pane = activePane.termSplits[direction]
+          item = pane.addItem termView
+          pane.activateItem item
+          @focusedTerminal = [pane, item]
+        else
+          splitter()
+      else
+        splitter()
 
   newIEx: ->
     console.log "NEW IEX"
