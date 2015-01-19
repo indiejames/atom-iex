@@ -83,7 +83,9 @@ module.exports = Iex =
         @subscriptions.add atom.commands.add 'atom-workspace',"iex:open-split-#{direction}", @splitTerm.bind(this, direction)
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeIEx()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:runtests': => @runTests()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-all-tests': => @runAllTests()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-tests': => @runTests()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
 
   deactivate: ->
@@ -124,9 +126,29 @@ module.exports = Iex =
 
   resetIEx: ->
     text = 'Mix.Task.reenable "compile.elixir";
+    try do;
     Application.stop(Mix.Project.config[:app]);
     Mix.Task.run "compile.elixir";
-    Application.start(Mix.Project.config[:app], :permanent)\n'
+    Application.start(Mix.Project.config[:app], :permanent)
+    catch;
+    :exit, _ -> "Application failed to start";
+    end;\n'
+
+    text = 'AtomIEx.reset\n'
+
+    if @focusedTerminal
+      if Array.isArray @focusedTerminal
+        [pane, item] = @focusedTerminal
+        pane.activateItem item
+      else
+        item = @focusedTerminal
+
+      item.term.send(text)
+      #item.term.write stream.trim()
+      item.term.focus()
+
+  runAllTests: ->
+    text = "AtomIEx.run_all_tests\n"
     if @focusedTerminal
       if Array.isArray @focusedTerminal
         [pane, item] = @focusedTerminal
@@ -139,11 +161,29 @@ module.exports = Iex =
       item.term.focus()
 
   runTests: ->
-    console.log "Running tests"
-    text = 'env=Mix.env(:test);
-    Mix.Task.reenable "test";
-    Mix.Tasks.Test.run ["--force"];
-    Mix.env(env)\n'
+    console.log("Running test")
+    editor = atom.workspace.getActiveEditor()
+    path = editor.getBuffer().file.path
+    text = "AtomIEx.run_test(\""
+    text = text.concat(path).concat("\")\n")
+    if @focusedTerminal
+      if Array.isArray @focusedTerminal
+        [pane, item] = @focusedTerminal
+        pane.activateItem item
+      else
+        item = @focusedTerminal
+
+      item.term.send(text)
+      #item.term.write stream.trim()
+      item.term.focus()
+
+  runTest: ->
+    console.log("Running test")
+    editor = atom.workspace.getActiveEditor()
+    path = editor.getBuffer().file.path
+    line_num = editor.getCursorBufferPosition().toArray()[0] + 1
+    text = "AtomIEx.run_test(\""
+    text = text.concat(path).concat("\",").concat(line_num).concat(")\n")
     if @focusedTerminal
       if Array.isArray @focusedTerminal
         [pane, item] = @focusedTerminal
@@ -180,14 +220,12 @@ module.exports = Iex =
         splitter()
 
   newIEx: ->
-    console.log "NEW IEX"
     termView = @createTermView()
     pane = atom.workspace.getActivePane()
     item = pane.addItem termView
     pane.activateItem item
 
   pipeIEx: ->
-    console.log "PIPE"
     editor = atom.workspace.getActiveEditor()
     action = 'selection'
     stream = switch action

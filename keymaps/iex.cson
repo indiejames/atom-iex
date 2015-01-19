@@ -15,7 +15,9 @@
   'cmd-alt-l right': 'iex:open-split-right'
   'cmd-alt-b': 'iex:pipe'
   'cmd-alt-e': 'iex:reset'
-  'cmd-alt-a': 'iex:runtests'
+  'cmd-alt-a': 'iex:run-all-tests'
+  'cmd-alt-x': 'iex:run-tests'
+  'cmd-alt-j': 'iex:run-test'
 
 '.iex':
   'cmd-v': 'iex:paste'

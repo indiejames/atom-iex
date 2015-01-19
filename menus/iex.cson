@@ -15,7 +15,9 @@
         {'label': 'Open IEx session in Top Pane', 'command': 'iex:open-split-down'}
         {'label': 'Open IEx session in Right Pane', 'command': 'iex:open-split-down'}
         {'label': 'Open IEx session in Left Pane', 'command': 'iex:open-split-down'}
-        {'label': 'Run tests', 'command', 'iex:run-tests'}
+        {'label': 'Run all tests', 'command': 'iex:run-all-tests'}
+        {'label': 'Run all tests in pane', 'command': 'iex:run-tests'}
+        {'label': 'Run test', 'command': 'iex:run-test'}
 
       ]
     ]
