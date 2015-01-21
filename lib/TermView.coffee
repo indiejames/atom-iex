@@ -8,7 +8,8 @@ Terminal   = require 'atom-term.js'
 
 keypather  = do require 'keypather'
 
-{$, View, Task} = require 'atom'
+{Task, CompositeDisposable} = require 'atom'
+{$, View, ScrollView} = require 'atom-space-pen-views'
 
 last = (str)-> str[str.length-1]
 
@@ -90,8 +91,14 @@ class TermView extends View
     console.log "ATTACHING EVENTS"
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
-    @command "iex:paste", => @paste()
-    @command "iex:copy", => @copy()
+    # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
+    @subscriptions = new CompositeDisposable
+
+    # Register commands
+    @subscriptions.add atom.commands.add '.iex', 'iex:paste': => @paste()
+    @subscriptions.add atom.commands.add 'iex', 'iex:copy': => @copy()
+    #@command "iex:paste", => @paste()
+    #@command "iex:copy", => @copy()
     console.log "DONE ATTACHING EVENTS"
 
   paste: ->
@@ -158,6 +165,9 @@ class TermView extends View
       rows = Math.floor @height() / 14
 
     {cols, rows}
+
+  deactivate: ->
+    @subscriptions.dispose()
 
   destroy: ->
     @detachResizeEvents()

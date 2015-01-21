@@ -1,5 +1,5 @@
 # from atom/terminal to reduce cpu usage
-pty = require 'pty.js'
+pty = require 'pty.js-patch'
 
 module.exports = (ptyCwd, args) ->
   callback = @async()
