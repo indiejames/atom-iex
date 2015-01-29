@@ -89,6 +89,7 @@ module.exports = Iex =
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
 
   deactivate: ->
+    @termViews.forEach (view)-> view.deactivate()
     @subscriptions.dispose()
 
   getColors: ->
@@ -118,6 +119,7 @@ module.exports = Iex =
     console.log "CREATE"
     termView.on 'remove', @handleRemoveTerm.bind this
     termView.on "click", => @focusedTerminal = termView
+    termView.on "focus", => console.log "FOCUS!"
     @focusedTerminal = termView
     #@subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
 
@@ -248,9 +250,3 @@ module.exports = Iex =
 
   handleRemoveTerm: (termView)->
     @termViews.splice @termViews.indexOf(termView), 1
-
-  deactivate:->
-      @termViews.forEach (view)-> view.deactivate()
-
-
-  #serialize: ->

@@ -96,18 +96,17 @@ class TermView extends View
 
     # Register commands
     @subscriptions.add atom.commands.add '.iex', 'iex:paste': => @paste()
-    @subscriptions.add atom.commands.add 'iex', 'iex:copy': => @copy()
+    @subscriptions.add atom.commands.add '.iex', 'iex:copy': => @copy()
+    #@subscriptions.add this.onDidActivate => @click()
     #@command "iex:paste", => @paste()
     #@command "iex:copy", => @copy()
     console.log "DONE ATTACHING EVENTS"
 
+  click: ->
+    console.log "CLICK"
+
   paste: ->
     @input atom.clipboard.read()
-
-  # copy: (text) ->
-  #   console.log "COPYING"
-  #   console.log text
-  #   atom.clipboard.write(text, {})
 
   copy: ->
     if  @term._selected  # term.js visual mode selections
@@ -150,7 +149,7 @@ class TermView extends View
 
     @resize cols, rows
     @term.resize cols, rows
-    atom.workspaceView.getActivePaneView().css overflow: 'visible'
+    #atom.workspaceView.getActivePaneView().css overflow: 'visible'
 
   getDimensions: ->
     fakeCol = $("<span id='colSize'>&nbsp;</span>").css visibility: 'hidden'
@@ -165,6 +164,14 @@ class TermView extends View
       rows = Math.floor @height() / 14
 
     {cols, rows}
+
+  activate: ->
+    console.log "ACTIVATE"
+    @focus
+
+  onActivePaneItemChanged: (activeItem) =>
+    console.log "CHANGED"
+    #@trigger 'pane-container:active-pane-item-changed', [activeItem]
 
   deactivate: ->
     @subscriptions.dispose()
