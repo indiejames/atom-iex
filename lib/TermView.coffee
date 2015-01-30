@@ -23,7 +23,7 @@ renderTemplate = (template, data)->
 class TermView extends View
 
   @content: ->
-    @div class: 'iex'
+    @div class: 'iex', click: 'click'
 
   constructor: (@opts={})->
     opts.shell = process.env.SHELL or 'bash'
@@ -102,14 +102,14 @@ class TermView extends View
     #@command "iex:copy", => @copy()
     console.log "DONE ATTACHING EVENTS"
 
-  click: ->
-    console.log "CLICK"
+  click: (evt, element) ->
+    @focus()
 
   paste: ->
     @input atom.clipboard.read()
 
   copy: ->
-    if  @term._selected  # term.js visual mode selections
+    if @term._selected  # term.js visual mode selections
       textarea = @term.getCopyTextarea()
       text = @term.grabText(
         @term._selected.x1, @term._selected.x2,
@@ -133,6 +133,7 @@ class TermView extends View
     $(window).off 'resize'
 
   focus: ->
+    console.log "FOCUS"
     @resizeToPane()
     @focusTerm()
     super
@@ -140,6 +141,10 @@ class TermView extends View
   focusTerm: ->
     @term.element.focus()
     @term.focus()
+    @term.focus()
+    @term.element.focus()
+    @input '\x1b[O'
+    console.log "FOCUS"
 
   resizeToPane: ->
     {cols, rows} = @getDimensions()
