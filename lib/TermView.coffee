@@ -97,9 +97,12 @@ class TermView extends View
     # Register commands
     @subscriptions.add atom.commands.add '.iex', 'iex:paste': => @paste()
     @subscriptions.add atom.commands.add '.iex', 'iex:copy': => @copy()
+    #@subscriptions.add atom.workspace.add 'activePaneItemChanged', @onActivePaneItemChanged
     #@subscriptions.add this.onDidActivate => @click()
     #@command "iex:paste", => @paste()
     #@command "iex:copy", => @copy()
+    #atom.workspace.onDidChangeActivePaneItem(function(item) {console.log item})
+    atom.workspace.onDidChangeActivePaneItem (item)=> @onActivePaneItemChanged(item)
     console.log "DONE ATTACHING EVENTS"
 
   click: (evt, element) ->
@@ -135,16 +138,20 @@ class TermView extends View
   focus: ->
     console.log "FOCUS"
     @resizeToPane()
+    console.log "Done R"
     @focusTerm()
-    super
+    console.log "Done"
+    #super
+    console.log "Done focusing"
+
+  scan:(regex, iterator) ->
+    console.log "SCAN"
 
   focusTerm: ->
+    console.log "Focusing Term"
     @term.element.focus()
     @term.focus()
-    @term.focus()
-    @term.element.focus()
-    @input '\x1b[O'
-    console.log "FOCUS"
+    console.log "Term focused"
 
   resizeToPane: ->
     {cols, rows} = @getDimensions()
@@ -154,15 +161,18 @@ class TermView extends View
 
     @resize cols, rows
     @term.resize cols, rows
-    #atom.workspaceView.getActivePaneView().css overflow: 'visible'
+    atom.workspaceView.getActivePaneView().css overflow: 'auto'
 
   getDimensions: ->
     fakeCol = $("<span id='colSize'>&nbsp;</span>").css visibility: 'hidden'
     if @term
       @find('.terminal').append fakeCol
       fakeCol = @find(".terminal span#colSize")
-      cols = Math.floor (@width() / fakeCol.width()) or 9
-      rows = Math.floor (@height() / fakeCol.height()) or 16
+      #cols = Math.floor (@width() / fakeCol.width()) or 9
+      cols = Math.floor (@width() / 18) + 20 or 9
+      console.log "COLS = " + cols
+      #rows = Math.floor (@height() / fakeCol.height()) or 16
+      rows = Math.floor (@height() / 18) + 1 or 16
       fakeCol.remove()
     else
       cols = Math.floor @width() / 7
@@ -174,9 +184,14 @@ class TermView extends View
     console.log "ACTIVATE"
     @focus
 
+
+    #@trigger 'pane-container:active-pane-item-changed', [activeItem]
+
   onActivePaneItemChanged: (activeItem) =>
     console.log "CHANGED"
-    #@trigger 'pane-container:active-pane-item-changed', [activeItem]
+    console.log activeItem
+    if (activeItem == this)
+      @focusTerm()
 
   deactivate: ->
     @subscriptions.dispose()

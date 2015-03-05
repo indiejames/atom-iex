@@ -9,11 +9,11 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "atom-iex-term.js": "0.0.56",
+    "atom-iex-term.js": "0.0.58",
     "debounce": "0.0.3",
     "fs-plus": "^2.2.3",
     "keypather": "^1.3.2",
-    "pty.js-patch": "^0.2.4",
+    "child_pty": "^0.5",
     "atom-space-pen-views": "^2.0.3"
   }
 }

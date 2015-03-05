@@ -1,5 +1,6 @@
 # from atom/terminal to reduce cpu usage
-pty = require 'pty.js-patch'
+#pty = require 'pty.js'
+pty = require 'child_pty'
 
 module.exports = (ptyCwd, args) ->
   callback = @async()
@@ -13,19 +14,27 @@ module.exports = (ptyCwd, args) ->
     shell = process.env.SHELL
     cols = 80
     rows = 30
-  ptyProcess = pty.fork shell, args,
+  # ptyProcess = pty.spawn shell, args,
+  #   name: 'xterm-256color'
+  #   cols: cols
+  #   rows: rows
+  #   cwd: ptyCwd
+  #   env: process.atom-space-pen-views
+  ptyProcess = pty.spawn shell, args,
     name: 'xterm-256color'
     cols: cols
     rows: rows
     cwd: ptyCwd
-    env: process.env
+    #env: process.atom-space-pen-views
 
-  ptyProcess.on 'data', (data) -> emit('iex:data', data)
+  ptyProcess.stdout.on 'data', (data) ->
+    sdata = data.toString("ascii")
+    emit('iex:data', sdata)
   ptyProcess.on 'exit', ->
     emit('iex:exit')
     callback()
 
   process.on 'message', ({event, cols, rows, text}={}) ->
     switch event
-      when 'resize' then ptyProcess.resize(cols, rows)
-      when 'input' then ptyProcess.write(text)
+      when 'resize' then ptyProcess.stdout.resize({columns: cols, rows: rows})
+      when 'input' then ptyProcess.stdin.write(text)
