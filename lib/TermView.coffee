@@ -164,15 +164,17 @@ class TermView extends View
     atom.workspaceView.getActivePaneView().css overflow: 'auto'
 
   getDimensions: ->
-    fakeCol = $("<span id='colSize'>&nbsp;</span>").css visibility: 'hidden'
+    fakeCol = $("<span id='colSize'>m</span>").css visibility: 'hidden'
     if @term
       @find('.terminal').append fakeCol
       fakeCol = @find(".terminal span#colSize")
-      #cols = Math.floor (@width() / fakeCol.width()) or 9
-      cols = Math.floor (@width() / 18) + 20 or 9
+      console.log "WIDTH = " + @width()
+      console.log "COL_WIDTH = " + fakeCol.width()
+      cols = Math.floor (@width() / fakeCol.width()) or 9
+      #cols = Math.floor (@width() / 10)  or 9
       console.log "COLS = " + cols
-      #rows = Math.floor (@height() / fakeCol.height()) or 16
-      rows = Math.floor (@height() / 18) + 1 or 16
+      rows = (Math.floor (@height() / fakeCol.height()) - 2) or 16
+      #rows = Math.floor (@height() / 14)  or 16
       fakeCol.remove()
     else
       cols = Math.floor @width() / 7
