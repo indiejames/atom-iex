@@ -39,13 +39,14 @@ class TermView extends View
     Task.once processPath, fs.absolute(projectPath), args
 
   initialize: (@state)->
+    iexSrcPath = atom.packages.resolvePackagePath("iex") + "/elixir_src/iex.exs"
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
-    args = ["-c", "iex"]
+    args = ["-c", "iex -r " + iexSrcPath]
     projectPath = atom.project.getPath()
     fileExists = fs.existsSync(path.join(projectPath, 'mix.exs'))
     if fileExists
-      args = ["-c", "iex -S mix"]
+      args = ["-c", "iex -r " + iexSrcPath + " -S mix"]
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data
     @ptyProcess.on 'iex:exit', (data) => @destroy()
@@ -162,7 +163,7 @@ class TermView extends View
 
     @resize cols, rows
     @term.resize cols, rows
-    atom.workspaceView.getActivePaneView().css overflow: 'auto'
+    #atom.workspaceView.getActivePaneView().css overflow: 'auto'
 
   getDimensions: ->
     fakeCol = $("<span id='colSize'>m</span>").css visibility: 'hidden'

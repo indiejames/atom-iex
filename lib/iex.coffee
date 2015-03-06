@@ -3,36 +3,6 @@ path = require 'path'
 TermView = require './TermView'
 os = require 'os'
 
-mix_module_src = """
-defmodule AtomIEx do\n
-  def reset do\n
-    Mix.Task.reenable \"compile.elixir"\n
-    try do\n
-      Application.stop(Mix.Project.config[:app]);\n
-      Mix.Task.run "compile.elixir";\n
-      Application.start(Mix.Project.config[:app], :permanent)\n
-    catch;\n
-      :exit, _ -> "Application failed to start"\n
-    end\n
-    :ok\n
-  end\n
-  def run_all_tests do\n
-    {rval, _} = System.cmd("mix", ["test", "--color"], [])\n
-    IO.puts rval\n
-  end\n
-  def run_test(file) do\n
-    {rval, _} = System.cmd("mix", ["test", "--color", file])\n
-    IO.puts rval\n
-  end\n
-  def run_test(file, line_num) do\n
-    {rval, _} = System.cmd("mix", ["test", "--color", "\#{file}:\#{line_num}"])\n
-    IO.puts rval\n
-  end\n
-end\n
-clear;respawn\n
-"""
-
-
 {SHELL, HOME}=process.env
 
 capitalize = (str)-> str[0].toUpperCase() + str[1..].toLowerCase()
@@ -104,8 +74,6 @@ module.exports = Iex =
           default: '#eeeeec'
 
   activate: (state) ->
-    console.log "activate iex"
-
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
@@ -138,19 +106,16 @@ module.exports = Iex =
     ]
 
   createTermView:->
-    hostname = os.hostname
-    console.log "HOSTNMAE"
-    console.log hostname
-    shellArguments = "-c 'iex'"
+
     opts =
       runCommand    : null
-      shellArguments: shellArguments
+      shellArguments: null
       titleTemplate : 'IEx'
       cursorBlink   : atom.config.get('iex.cursorBlink')
       colors        : @getColors()
 
     termView = new TermView opts
-    termView.term.send(mix_module_src)
+    # termView.term.send(mix_module_src)
     console.log "CREATE"
     termView.on 'remove', @handleRemoveTerm.bind this
     termView.on "click", => @focusedTerminal = termView
@@ -161,18 +126,7 @@ module.exports = Iex =
     @termViews.push? termView
     termView
 
-  resetIEx: ->
-    text = 'Mix.Task.reenable "compile.elixir";
-    try do;
-    Application.stop(Mix.Project.config[:app]);
-    Mix.Task.run "compile.elixir";
-    Application.start(Mix.Project.config[:app], :permanent)
-    catch;
-    :exit, _ -> "Application failed to start";
-    end;\n'
-
-    text = 'AtomIEx.reset\n'
-
+  runCommand: (cmd) ->
     if @focusedTerminal
       if Array.isArray @focusedTerminal
         [pane, item] = @focusedTerminal
@@ -180,22 +134,16 @@ module.exports = Iex =
       else
         item = @focusedTerminal
 
-      item.term.send(text)
-      #item.term.write stream.trim()
+      item.term.send(cmd)
       item.term.focus()
+
+  resetIEx: ->
+    text = 'AtomIEx.reset\n'
+    @runCommand(text)
 
   runAllTests: ->
     text = "AtomIEx.run_all_tests\n"
-    if @focusedTerminal
-      if Array.isArray @focusedTerminal
-        [pane, item] = @focusedTerminal
-        pane.activateItem item
-      else
-        item = @focusedTerminal
-
-      item.term.send(text)
-      #item.term.write stream.trim()
-      item.term.focus()
+    @runCommand(text)
 
   runTests: ->
     console.log("Running test")
@@ -203,16 +151,7 @@ module.exports = Iex =
     path = editor.getBuffer().file.path
     text = "AtomIEx.run_test(\""
     text = text.concat(path).concat("\")\n")
-    if @focusedTerminal
-      if Array.isArray @focusedTerminal
-        [pane, item] = @focusedTerminal
-        pane.activateItem item
-      else
-        item = @focusedTerminal
-
-      item.term.send(text)
-      #item.term.write stream.trim()
-      item.term.focus()
+    @runCommand(text)
 
   runTest: ->
     console.log("Running test")
@@ -221,16 +160,7 @@ module.exports = Iex =
     line_num = editor.getCursorBufferPosition().toArray()[0] + 1
     text = "AtomIEx.run_test(\""
     text = text.concat(path).concat("\",").concat(line_num).concat(")\n")
-    if @focusedTerminal
-      if Array.isArray @focusedTerminal
-        [pane, item] = @focusedTerminal
-        pane.activateItem item
-      else
-        item = @focusedTerminal
-
-      item.term.send(text)
-      #item.term.write stream.trim()
-      item.term.focus()
+    @runCommand(text)
 
   splitTerm: (direction)->
       openPanesInSameSplit = atom.config.get 'iex.openPanesInSameSplit'
@@ -280,7 +210,6 @@ module.exports = Iex =
 
       text = stream.trim().concat("\n")
       item.term.send(text)
-      #item.term.write stream.trim()
       item.term.focus()
 
   handleRemoveTerm: (termView)->
