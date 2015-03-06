@@ -74,6 +74,7 @@ class TermView extends View
     @ptyProcess.send event: 'input', text: data
 
   resize: (cols, rows) ->
+    console.log "RESIZE"
     @ptyProcess.send {event: 'resize', rows, cols}
 
   titleVars: ->
