@@ -115,13 +115,9 @@ module.exports = Iex =
       colors        : @getColors()
 
     termView = new TermView opts
-    # termView.term.send(mix_module_src)
-    console.log "CREATE"
     termView.on 'remove', @handleRemoveTerm.bind this
     termView.on "click", => @focusedTerminal = termView
-    termView.on "focus", => console.log "FOCUS!"
     @focusedTerminal = termView
-    #@subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIex()
 
     @termViews.push? termView
     termView
@@ -146,7 +142,6 @@ module.exports = Iex =
     @runCommand(text)
 
   runTests: ->
-    console.log("Running test")
     editor = atom.workspace.getActiveEditor()
     path = editor.getBuffer().file.path
     text = "AtomIEx.run_test(\""
@@ -154,7 +149,6 @@ module.exports = Iex =
     @runCommand(text)
 
   runTest: ->
-    console.log("Running test")
     editor = atom.workspace.getActiveEditor()
     path = editor.getBuffer().file.path
     line_num = editor.getCursorBufferPosition().toArray()[0] + 1

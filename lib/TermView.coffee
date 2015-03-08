@@ -86,7 +86,6 @@ class TermView extends View
     @ptyProcess.send event: 'input', text: data
 
   resize: (cols, rows) ->
-    console.log "RESIZE"
     @ptyProcess.send {event: 'resize', rows, cols}
 
   titleVars: ->
@@ -146,14 +145,9 @@ class TermView extends View
     @focusTerm()
     #super
 
-  scan:(regex, iterator) ->
-    console.log "SCAN"
-
   focusTerm: ->
-    console.log "Focusing Term"
     @term.element.focus()
     @term.focus()
-    console.log "Term focused"
 
   resizeToPane: ->
     {cols, rows} = @getDimensions()
@@ -182,14 +176,9 @@ class TermView extends View
     {cols, rows}
 
   activate: ->
-    console.log "ACTIVATE"
     @focus
 
-
-    #@trigger 'pane-container:active-pane-item-changed', [activeItem]
-
   onActivePaneItemChanged: (activeItem) =>
-    console.log activeItem
     if (activeItem == this)
       @focusTerm()
 
