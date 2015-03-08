@@ -1,17 +1,26 @@
-util       = require 'util'
-path       = require 'path'
-os         = require 'os'
-fs         = require 'fs-plus'
+util        = require 'util'
+path        = require 'path'
+os          = require 'os'
+fs          = require 'fs-plus'
+uuid        = require 'uuid'
 
-debounce   = require 'debounce'
-Terminal   = require 'atom-term.js'
+Terminal    = require 'atom-term.js'
 
-keypather  = do require 'keypather'
+keypather   = do require 'keypather'
 
 {Task, CompositeDisposable} = require 'atom'
 {$, View, ScrollView} = require 'atom-space-pen-views'
 
+uuids = []
+
 last = (str)-> str[str.length-1]
+
+generateUUID = ()->
+  new_id = uuid.v1().substring(0,4)
+  while new_id in uuids
+    new_id = uuid.v1().substring(0,4)
+  uuids.push new_id
+  new_id
 
 renderTemplate = (template, data)->
   vars = Object.keys data
@@ -42,11 +51,13 @@ class TermView extends View
     iexSrcPath = atom.packages.resolvePackagePath("iex") + "/elixir_src/iex.exs"
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
-    args = ["-c", "iex -r " + iexSrcPath]
+    new_id = generateUUID()
+    args = ["-c", "iex --sname IEX-" + new_id + " -r " + iexSrcPath]
     projectPath = atom.project.getPath()
     fileExists = fs.existsSync(path.join(projectPath, 'mix.exs'))
     if fileExists
-      args = ["-c", "iex -r " + iexSrcPath + " -S mix"]
+      args = ["-c", "iex --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
+
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data
     @ptyProcess.on 'iex:exit', (data) => @destroy()
@@ -90,7 +101,6 @@ class TermView extends View
     renderTemplate titleTemplate, @vars
 
   attachEvents: ->
-    console.log "ATTACHING EVENTS"
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
@@ -99,13 +109,7 @@ class TermView extends View
     # Register commands
     @subscriptions.add atom.commands.add '.iex', 'iex:paste': => @paste()
     @subscriptions.add atom.commands.add '.iex', 'iex:copy': => @copy()
-    #@subscriptions.add atom.workspace.add 'activePaneItemChanged', @onActivePaneItemChanged
-    #@subscriptions.add this.onDidActivate => @click()
-    #@command "iex:paste", => @paste()
-    #@command "iex:copy", => @copy()
-    #atom.workspace.onDidChangeActivePaneItem(function(item) {console.log item})
     atom.workspace.onDidChangeActivePaneItem (item)=> @onActivePaneItemChanged(item)
-    console.log "DONE ATTACHING EVENTS"
 
   click: (evt, element) ->
     @focus()
@@ -138,13 +142,9 @@ class TermView extends View
     $(window).off 'resize'
 
   focus: ->
-    console.log "FOCUS"
     @resizeToPane()
-    console.log "Done R"
     @focusTerm()
-    console.log "Done"
     #super
-    console.log "Done focusing"
 
   scan:(regex, iterator) ->
     console.log "SCAN"
@@ -170,11 +170,8 @@ class TermView extends View
     if @term
       @find('.terminal').append fakeCol
       fakeCol = @find(".terminal span#colSize")
-      console.log "WIDTH = " + @width()
-      console.log "COL_WIDTH = " + fakeCol.width()
       cols = Math.floor (@width() / fakeCol.width()) or 9
       #cols = Math.floor (@width() / 10)  or 9
-      console.log "COLS = " + cols
       rows = (Math.floor (@height() / fakeCol.height()) - 2) or 16
       #rows = Math.floor (@height() / 14)  or 16
       fakeCol.remove()
@@ -192,7 +189,6 @@ class TermView extends View
     #@trigger 'pane-container:active-pane-item-changed', [activeItem]
 
   onActivePaneItemChanged: (activeItem) =>
-    console.log "CHANGED"
     console.log activeItem
     if (activeItem == this)
       @focusTerm()

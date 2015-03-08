@@ -1,6 +1,6 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
-  '.IEx':
+  '.iex':
     'Copy': 'iex:copy'
     'Paste': 'iex:paste'
 'menu': [
@@ -18,7 +18,8 @@
         {'label': 'Run all tests', 'command': 'iex:run-all-tests'}
         {'label': 'Run all tests in pane', 'command': 'iex:run-tests'}
         {'label': 'Run test', 'command': 'iex:run-test'}
-
+        {'label': 'Reset', 'command': 'iex:reset'}
+        {'labell': 'Execute selected in IEx', 'command': 'iex:paste'}
       ]
     ]
   }
