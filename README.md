@@ -6,7 +6,7 @@ unlikely to work properly (or at all) on other platforms.
 
 This package is based on the [Term2 Atom package](https://atom.io/packages/term2) with customizations specific to IEx.
 
-![iex Screenshot](https://github.com/indiejames/atom-iex/screenshot.gf?raw=true)
+![iex Screenshot](https://github.com/indiejames/atom-iex/screenshot.gif?raw=true)
 
 
 ### Installation
@@ -15,27 +15,19 @@ This package is based on the [Term2 Atom package](https://atom.io/packages/term2
 apm install iex
 ```
 
+It is _highly recommended_ that you add keybindings for these action (see below).
+
 ### Features
 
-Aside from typing directly in the IEx session, the plugin provides menu actions
+Aside from typing directly in the IEx session, the plugin provides actions
 to improve workflow:
 
-
-* 'Open IEx session in New Tab' -> 'iex:open'
-* 'Open IEx session in Bottom Pane' -> 'iex:open-split-down'
-* 'Open IEx session in Top Pane' -> 'iex:open-split-down'
-* 'Open IEx session in Right Pane' -> 'iex:open-split-down'
-* 'Open IEx session in Left Pane' -> 'iex:open-split-down'
-* 'Run all tests' -> 'iex:run-all-tests'
-* 'Run all tests in file' -> 'iex:run-tests'
-    Run all tests in the currently open file
-* 'Run test' -> 'iex:run-test'
-    Click in a test definition before selecting this to run that test.
-* 'Execute selected in IEx' -> 'iex:paste'
-* 'Reset' -> 'iex:reset'
-    Stops the application, compiles any changed files with mix, then restarts the application.
-
-It is _highly recommended that you add keybindings for these action (see below).
+* Reset the project, restarting the application and compiling any files that
+have changed since the last restart
+* Run all tests in the project
+* Run all tests in the currently open editor
+* Run the test in the open editor in which the cursor resides
+* Execute selected text
 
 ### Key Bindings
 
@@ -56,6 +48,23 @@ Customizing Key Bindings:
   'cmd-alt-j': 'iex:run-test'
   'cmd-alt-b': 'iex:pipe'
 ```
+
+Adding these will provide the following:
+
+## Key Bindings and Events
+
+| key binding | event | action |
+| ----------- | ----- | ------ |
+| `cmd + alt + l` | `iex:open` | Opens new IEx in new tab pane |
+| `cmd + alt + l down` | `iex:open-split-up` | Opens new IEx tab pane in up split |
+| `cmd + alt + l right` | `iex:open-split-right` | Opens new IEx tab pane in right split |
+| `cmd + alt + l down` | `iex:open-split-down` | Opens new IEx tab pane in down split |
+| `cmd + alt + l left` | `iex:open-split-left` | Opens new IEx tab pane in left split |
+| `cmd + alt + e` | `iex:reset` | Stops the application, compiles any changed files with mix, then restarts the application. |
+| `cmd + alt + a` | `iex:run-all-tests` | Run all the test in the project |
+| `cmd + alt + x` | `iex:run-tests` | Run all the tests in the active editor |
+| `cmd + alt + j` | `iex:run-test` | Run the test in which the cursor lies |
+| `cmd | alt | j` | `iex:pipe` | Pipe the currently selected text to the REPL and execute it |
 
 ## Fonts
 You can set the font size by adding the following to your Atom stylesheet Atom menu - Open your stylesheet). Change the font, font-size, and heights as desired.
