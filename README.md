@@ -1,10 +1,23 @@
-# iex package
+# iex package [![Build Status](https://travis-ci.org/atom-minimap/minimap.svg?branch=master)](https://travis-ci.org/atom-minimap/minimap)
 
 This package provides Elixir developers with the ability to run an Elixir IEx
 (REPL) session in an Atom window. It has only been tested on OS X and is
 unlikely to work properly (or at all) on other platforms.
 
-This package is based on the [Term2 Atom package](https://atom.io/packages/term2) with customizations specific to IEx, including key bindings to execute code and tests in the REPL.
+This package is based on the [Term2 Atom package](https://atom.io/packages/term2) with customizations specific to IEx.
+
+
+### Installation
+
+```
+apm install iex
+```
+
+### Features
+
+*
+
+
 
 ## Executing commands
 Aside from typing directly in the IEx session, the plugin provides menu actions
