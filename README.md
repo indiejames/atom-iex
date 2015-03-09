@@ -29,7 +29,7 @@ have changed since the last restart
 * Run all tests in the project
 * Run all tests in the currently open editor
 * Run the test in the open editor in which the cursor resides
-* Execute selected text
+* Execute the currently selected text
 
 These actions depend on `mix`, so they only work for `mix` generated projects
 and require a `mix.exs` file at the top level.
