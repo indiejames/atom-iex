@@ -51,7 +51,7 @@ Customizing Key Bindings:
 
 Adding these will provide the following:
 
-## Key Bindings and Events
+#### Key Bindings and Events
 
 | key binding | event | action |
 | ----------- | ----- | ------ |
