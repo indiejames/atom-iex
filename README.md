@@ -64,7 +64,7 @@ Adding these will provide the following:
 | `cmd + alt + a` | `iex:run-all-tests` | Run all the test in the project |
 | `cmd + alt + x` | `iex:run-tests` | Run all the tests in the active editor |
 | `cmd + alt + j` | `iex:run-test` | Run the test in which the cursor lies |
-| `cmd | alt | j` | `iex:pipe` | Pipe the currently selected text to the REPL and execute it |
+| `cmd + alt + b` | `iex:pipe` | Pipe the currently selected text to the REPL and execute it |
 
 ## Fonts
 You can set the font size by adding the following to your Atom stylesheet Atom menu - Open your stylesheet). Change the font, font-size, and heights as desired.
