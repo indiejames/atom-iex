@@ -31,6 +31,9 @@ have changed since the last restart
 * Run the test in the open editor in which the cursor resides
 * Execute selected text
 
+These actions depend on `mix`, so they only work for `mix` generated projects
+and require a `mix.exs` file at the top level.
+
 ### Key Bindings
 
 Customizing Key Bindings:
