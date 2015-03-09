@@ -15,7 +15,9 @@ This package is based on the [Term2 Atom package](https://atom.io/packages/term2
 apm install iex
 ```
 
-It is _highly recommended_ that you add the keybindings below.
+It is _highly recommended_ that you add the key bindings below. These can be
+customized as desired. They are not set by default to avoid conflicts with
+other packages.
 
 ### Features
 
