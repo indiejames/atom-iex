@@ -2,7 +2,7 @@
   "name": "iex",
   "main": "./lib/iex",
   "version": "0.2.0",
-  "description": "This package provides Elixir developers with the ability to run an Elixir IEx (REPL) session in an Atom window.",
+  "description": "Run an Elixir IEx (REPL) session in an Atom window.",
   "repository": "https://github.com/indiejames/atom-iex",
   "license": "MIT",
   "engines": {
