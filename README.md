@@ -4,8 +4,6 @@ This package provides Elixir developers with the ability to run an Elixir IEx
 (REPL) session in an Atom window. It has only been tested on OS X and is
 unlikely to work properly (or at all) on other platforms.
 
-This package is based on the [Term2 Atom package](https://atom.io/packages/term2) with customizations specific to IEx.
-
 ![iex Screenshot](https://github.com/indiejames/atom-iex/raw/master/atom-iex.gif)
 
 
@@ -71,7 +69,7 @@ Adding these will provide the following:
 | `cmd + alt + j` | `iex:run-test` | Run the test in which the cursor lies |
 | `cmd + alt + b` | `iex:pipe` | Pipe the currently selected text to the REPL and execute it |
 
-## Fonts
+### Fonts
 You can set the font size by adding the following to your Atom stylesheet.
 `Atom menu - Open your stylesheet)`
 Change the font, font-size, and heights as desired.
@@ -88,6 +86,10 @@ Change the font, font-size, and heights as desired.
         }
       }
     }
+
+### Contributions
+
+This package is originally based on the [Term2 Atom package](https://atom.io/packages/term2) with heavy modifications. Feel free to submit bugs or issue pull requests.
 
 ### License
 
