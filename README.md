@@ -6,7 +6,7 @@ unlikely to work properly (or at all) on other platforms.
 
 This package is based on the [Term2 Atom package](https://atom.io/packages/term2) with customizations specific to IEx.
 
-![iex Screenshot](https://raw.githubusercontent.com/indiejames/atom-iex/master/ScreenShot.gif)
+![iex Screenshot](https://github.com/indiejames/atom-iex/raw/master/atom-iex.gif)
 
 
 ### Installation
