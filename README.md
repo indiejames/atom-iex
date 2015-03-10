@@ -90,7 +90,3 @@ Change the font, font-size, and heights as desired.
 ### Contributions
 
 This package is originally based on the [Term2 Atom package](https://atom.io/packages/term2) with heavy modifications. Feel free to submit bugs or issue pull requests.
-
-### License
-
-MIT
