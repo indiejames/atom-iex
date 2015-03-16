@@ -22,6 +22,16 @@ generateUUID = ()->
   uuids.push new_id
   new_id
 
+getMixFilePath = ()->
+  mixPath = null
+  for projectPath in atom.project.getPaths()
+    do (projectPath) ->
+      if projectPath && fs.existsSync(path.join(projectPath, 'mix.exs'))
+        mixPath = path.join(projectPath, 'mix.exs')
+        return
+  mixPath
+
+
 renderTemplate = (template, data)->
   vars = Object.keys data
   vars.reduce (_template, key)->
@@ -53,9 +63,9 @@ class TermView extends View
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     new_id = generateUUID()
     args = ["-c", "iex --sname IEX-" + new_id + " -r " + iexSrcPath]
-    projectPath = atom.project.getPath()
-    fileExists = fs.existsSync(path.join(projectPath, 'mix.exs'))
-    if fileExists
+    mixPath = getMixFilePath()
+    # assume mix file is at top level
+    if mixPath
       args = ["-c", "iex --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
 
     @ptyProcess = @forkPtyProcess args

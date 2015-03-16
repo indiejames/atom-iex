@@ -86,6 +86,7 @@ module.exports = Iex =
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-tests': => @runTests()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
+    console.log "activate iex"
 
   deactivate: ->
     @termViews.forEach (view)-> view.deactivate()
