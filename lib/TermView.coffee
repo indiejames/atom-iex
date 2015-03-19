@@ -62,11 +62,12 @@ class TermView extends View
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     new_id = generateUUID()
-    args = ["-c", "iex --sname IEX-" + new_id + " -r " + iexSrcPath]
+    iexPath = atom.config.get 'iex.iexPath'
+    args = ["-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath]
     mixPath = getMixFilePath()
     # assume mix file is at top level
     if mixPath
-      args = ["-c", "iex --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
+      args = ["-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
 
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data

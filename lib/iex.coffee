@@ -12,6 +12,9 @@ module.exports = Iex =
   termViews: []
   focusedTerminal: off
   config:
+    iexPath:
+      type: 'string'
+      default: '/usr/local/bin/iex'
     scrollback:
       type: 'integer'
       default: 1000
