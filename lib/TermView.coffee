@@ -67,7 +67,7 @@ class TermView extends View
     mixPath = getMixFilePath()
     # assume mix file is at top level
     if mixPath
-      args = ["-l -c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
+      args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
 
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'iex:data', (data) => @term.write data
