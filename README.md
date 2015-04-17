@@ -45,6 +45,7 @@ Customizing Key Bindings:
   'cmd-alt-l right': 'iex:open-split-right'
   'cmd-alt-e': 'iex:reset'
   'cmd-alt-a': 'iex:run-all-tests'
+  'cmd-alt-h': 'iex:help'
 
 '.editor':
   'cmd-alt-x': 'iex:run-tests'
@@ -67,6 +68,7 @@ Adding these will provide the following:
 | `cmd + alt + a` | `iex:run-all-tests` | Run all the test in the project |
 | `cmd + alt + x` | `iex:run-tests` | Run all the tests in the active editor |
 | `cmd + alt + j` | `iex:run-test` | Run the test in which the cursor lies |
+| `cmd + alt + h` | `iex:help` | Print the docstring for the function or module under the cursor
 | `cmd + alt + b` | `iex:pipe` | Pipe the currently selected text to the REPL and execute it |
 
 ### Fonts
