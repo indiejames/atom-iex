@@ -1,4 +1,4 @@
-{CompositeDisposable} = require 'atom'
+{CompositeDisposable, Point} = require 'atom'
 path = require 'path'
 TermView = require './TermView'
 os = require 'os'
@@ -82,6 +82,7 @@ module.exports = Iex =
         @subscriptions.add atom.commands.add 'atom-workspace',"iex:open-split-#{direction}", @splitTerm.bind(this, direction)
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:open': => @newIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pipe': => @pipeIEx()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:help': => @printHelp()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-all-tests': => @runAllTests()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-tests': => @runTests()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
@@ -156,6 +157,31 @@ module.exports = Iex =
     text = "AtomIEx.run_test(\""
     text = text.concat(path).concat("\",").concat(line_num).concat(")\n")
     @runCommand(text)
+
+  printHelp: ->
+    console.log "OK"
+    editor = atom.workspace.getActiveEditor()
+    cursorPosition = editor.getCursorBufferPosition()
+    [row, col] = cursorPosition.toArray()
+    begRegex = new RegExp("[\\(,\\s]")
+    endRegex = new RegExp(".*?[\\(,\\s\.]")
+    endRange = [new Point(row, col + 1), new Point(row, col + 10000)]
+    begRange = [new Point(row, 0), new Point(row, col)]
+    tailIndex = -1
+    headIndex = -1
+
+    editor.scanInBufferRange(endRegex, endRange,
+      (match, matchText, range, stop, replace) ->
+        tailIndex = match.match.index + match.match[0].length - 1
+    )
+
+    editor.backwardsScanInBufferRange(begRegex, begRange,
+      (match, matchText, range, stop, replace) ->
+        headIndex = match.match.index
+    )
+
+    text = editor.getText().substring(headIndex, tailIndex)
+    @runCommand("h " + text + "\n")
 
   splitTerm: (direction)->
       openPanesInSameSplit = atom.config.get 'iex.openPanesInSameSplit'
