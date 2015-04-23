@@ -46,6 +46,7 @@ Customizing Key Bindings:
   'cmd-alt-e': 'iex:reset'
   'cmd-alt-a': 'iex:run-all-tests'
   'cmd-alt-h': 'iex:help'
+  'cmd-alt-p': 'iex:pretty-print'
 
 '.editor':
   'cmd-alt-x': 'iex:run-tests'
@@ -70,6 +71,7 @@ Adding these will provide the following:
 | `cmd + alt + j` | `iex:run-test` | Run the test in which the cursor lies |
 | `cmd + alt + h` | `iex:help` | Print the docstring for the function or module under the cursor
 | `cmd + alt + b` | `iex:pipe` | Pipe the currently selected text to the REPL and execute it |
+| `cmd + alt + p` | `iex:pretty-print` | Pretty print the last evaluated expression |
 
 ### Fonts
 You can set the font size by adding the following to your Atom stylesheet.

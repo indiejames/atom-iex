@@ -87,6 +87,7 @@ module.exports = Iex =
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-tests': => @runTests()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pretty-print': => @prettyPrint()
     console.log "activate iex"
 
   deactivate: ->
@@ -159,7 +160,6 @@ module.exports = Iex =
     @runCommand(text)
 
   printHelp: ->
-    console.log "OK"
     editor = atom.workspace.getActiveEditor()
     cursorPosition = editor.getCursorBufferPosition()
     [row, col] = cursorPosition.toArray()
@@ -182,6 +182,9 @@ module.exports = Iex =
 
     text = editor.getText().substring(headIndex, tailIndex)
     @runCommand("h " + text + "\n")
+
+  prettyPrint: ->
+    @runCommand("IO.puts(v(-1))\n")
 
   splitTerm: (direction)->
       openPanesInSameSplit = atom.config.get 'iex.openPanesInSameSplit'
