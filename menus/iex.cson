@@ -1,8 +1,9 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
-  '.iex':
-    'Copy': 'iex:copy'
-    'Paste': 'iex:paste'
+  '.iex': [
+    {'label': 'Copy', 'command': 'iex:copy'}
+    {'label': 'Paste', 'command': 'iex:paste'}
+  ]
 'menu': [
   {
     'label': 'Packages'
