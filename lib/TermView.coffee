@@ -49,7 +49,7 @@ class TermView extends View
     opts.shellArguments or= ''
 
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
-    opts.cwd = opts.cwd or atom.project.getPath() or editorPath or process.env.HOME
+    opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
     super
 
   forkPtyProcess: (args=[])->
