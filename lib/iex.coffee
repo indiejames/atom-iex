@@ -237,4 +237,5 @@ module.exports = Iex =
       item.term.focus()
 
   handleRemoveTerm: (termView)->
+    console.log "Removing termview"
     @termViews.splice @termViews.indexOf(termView), 1

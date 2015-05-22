@@ -67,19 +67,25 @@ class TermView extends View
     mixPath = getMixFilePath()
     # assume mix file is at top level
     if mixPath
-      args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix"]
+      file_str = fs.readFileSync(mixPath, {"encoding": "utf-8"})
+      phoenix_str = ""
+      if file_str.match(/applications.*:phoenix/g)
+        phoenix_str = " phoenix.server"
+        console.log phoenix_str
+      args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix" + phoenix_str]
 
-    @ptyProcess = @forkPtyProcess args
-    @ptyProcess.on 'iex:data', (data) => @term.write data
-    @ptyProcess.on 'iex:exit', (data) => @destroy()
-
-    colorsArray = (colorCode for colorName, colorCode of colors)
     @term = term = new Terminal {
       useStyle: no
       screenKeys: no
       colors: colorsArray
       cursorBlink, scrollback, cols, rows
     }
+
+    @ptyProcess = @forkPtyProcess args
+    @ptyProcess.on 'iex:data', (data) => @term.write data
+    @ptyProcess.on 'iex:exit', (data) => @destroy()
+
+    colorsArray = (colorCode for colorName, colorCode of colors)
 
     term.end = => @destroy()
 
@@ -197,7 +203,19 @@ class TermView extends View
     @subscriptions.dispose()
 
   destroy: ->
+    console.log "Destroying TermView"
+    @input "\nSystem.halt\n\n"
+    console.log "System halted"
+    # this is cheesy and a race condition, but apparently I need a delay
+    # before continuing so the IEx system can halt
+    # FIXME - race condition
+    count = 10000000
+    while count -= 1
+      ""
+
     @detachResizeEvents()
+
+    @ptyProcess.send("exit")
     @ptyProcess.terminate()
     @term.destroy()
     parentPane = atom.workspace.getActivePane()
