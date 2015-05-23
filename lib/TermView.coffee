@@ -54,7 +54,7 @@ class TermView extends View
 
   forkPtyProcess: (args=[])->
     processPath = require.resolve './pty'
-    projectPath = atom.project.getPath() ? '~'
+    projectPath = atom.project.getPaths()[0] ? '~'
     Task.once processPath, fs.absolute(projectPath), args
 
   initialize: (@state)->

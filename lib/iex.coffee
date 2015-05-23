@@ -145,11 +145,12 @@ module.exports = Iex =
     @runCommand(text)
 
   runTests: ->
-    editor = atom.workspace.getActiveEditor()
-    path = editor.getBuffer().file.path
-    text = "AtomIEx.run_test(\""
-    text = text.concat(path).concat("\")\n")
-    @runCommand(text)
+    editor = atom.workspace.getActiveTextEditor()
+    if editor
+      path = editor.getBuffer().file.path
+      text = "AtomIEx.run_test(\""
+      text = text.concat(path).concat("\")\n")
+      @runCommand(text)
 
   runTest: ->
     editor = atom.workspace.getActiveEditor()
