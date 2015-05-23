@@ -219,23 +219,24 @@ module.exports = Iex =
 
   pipeIEx: ->
     editor = atom.workspace.getActiveEditor()
-    action = 'selection'
-    stream = switch action
-      when 'path'
-        editor.getBuffer().file.path
-      when 'selection'
-        editor.getSelectedText()
+    if editor
+      action = 'selection'
+      stream = switch action
+        when 'path'
+          editor.getBuffer().file.path
+        when 'selection'
+          editor.getSelectedText()
 
-    if stream and @focusedTerminal
-      if Array.isArray @focusedTerminal
-        [pane, item] = @focusedTerminal
-        pane.activateItem item
-      else
-        item = @focusedTerminal
+      if stream and @focusedTerminal
+        if Array.isArray @focusedTerminal
+          [pane, item] = @focusedTerminal
+          pane.activateItem item
+        else
+          item = @focusedTerminal
 
-      text = stream.trim().concat("\n")
-      item.term.send(text)
-      item.term.focus()
+        text = stream.trim().concat("\n")
+        item.term.send(text)
+        item.term.focus()
 
   handleRemoveTerm: (termView)->
     console.log "Removing termview"
