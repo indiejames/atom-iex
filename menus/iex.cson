@@ -21,7 +21,7 @@
         {'label': 'Run all tests in pane', 'command': 'iex:run-tests'}
         {'label': 'Run test', 'command': 'iex:run-test'}
         {'label': 'Reset', 'command': 'iex:reset'}
-        {'label': 'Execute selected in IEx', 'command': 'iex:paste'}
+        {'label': 'Execute selected in IEx', 'command': 'iex:pipe'}
       ]
     ]
   }
