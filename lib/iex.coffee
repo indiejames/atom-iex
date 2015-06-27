@@ -7,6 +7,8 @@ os = require 'os'
 
 capitalize = (str)-> str[0].toUpperCase() + str[1..].toLowerCase()
 
+paneChanged = (pane)-> console.log("Pane changed")
+
 module.exports = Iex =
   subscriptions: null
   termViews: []
@@ -88,6 +90,7 @@ module.exports = Iex =
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pretty-print': => @prettyPrint()
+    @subscriptions.add atom.workspace.onDidChangeActivePane(paneChanged)
     console.log "activate iex"
 
   deactivate: ->
@@ -239,5 +242,4 @@ module.exports = Iex =
         item.term.focus()
 
   handleRemoveTerm: (termView)->
-    console.log "Removing termview"
     @termViews.splice @termViews.indexOf(termView), 1

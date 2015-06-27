@@ -41,6 +41,8 @@ renderTemplate = (template, data)->
 
 class TermView extends View
 
+  tabindex: -1
+
   @content: ->
     @div class: 'iex', click: 'click'
 
@@ -99,6 +101,26 @@ class TermView extends View
     @attachEvents()
     @resizeToPane()
 
+
+  focus: ->
+    @resizeToPane()
+    @focusTerm()
+    #super
+
+  focusTerm: ->
+    @term.element.focus()
+    @term.focus()
+
+
+  onActivePaneItemChanged: (activeItem) =>
+    console.log "Checking to see if this pane selected"
+    console.log activeItem
+    console.log activeItem.items.length
+    console.log this
+    if (activeItem && activeItem.items.length == 1 && activeItem.items[0] == this)
+      console.log "Focusing term"
+      @focus()
+
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
 
@@ -125,7 +147,8 @@ class TermView extends View
     # Register commands
     @subscriptions.add atom.commands.add '.iex', 'iex:paste': => @paste()
     @subscriptions.add atom.commands.add '.iex', 'iex:copy': => @copy()
-    atom.workspace.onDidChangeActivePaneItem (item)=> @onActivePaneItemChanged(item)
+    @subscriptions.add atom.workspace.onDidChangeActivePane(@onActivePaneItemChanged)
+    #atom.workspace.onDidChangeActivePaneItem (item)=> @onActivePaneItemChanged(item)
 
   click: (evt, element) ->
     @focus()
@@ -157,15 +180,6 @@ class TermView extends View
     @off 'focus', @focus
     $(window).off 'resize'
 
-  focus: ->
-    @resizeToPane()
-    @focusTerm()
-    #super
-
-  focusTerm: ->
-    @term.element.focus()
-    @term.focus()
-
   resizeToPane: ->
     {cols, rows} = @getDimensions()
     return unless cols > 0 and rows > 0
@@ -194,10 +208,6 @@ class TermView extends View
 
   activate: ->
     @focus
-
-  onActivePaneItemChanged: (activeItem) =>
-    if (activeItem == this)
-      @focusTerm()
 
   deactivate: ->
     @subscriptions.dispose()
