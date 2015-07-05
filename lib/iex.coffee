@@ -156,36 +156,38 @@ module.exports = Iex =
       @runCommand(text)
 
   runTest: ->
-    editor = atom.workspace.getActiveEditor()
-    path = editor.getBuffer().file.path
-    line_num = editor.getCursorBufferPosition().toArray()[0] + 1
-    text = "AtomIEx.run_test(\""
-    text = text.concat(path).concat("\",").concat(line_num).concat(")\n")
-    @runCommand(text)
+    editor = atom.workspace.getActiveTextEditor()
+    if editor
+      path = editor.getBuffer().file.path
+      line_num = editor.getCursorBufferPosition().toArray()[0] + 1
+      text = "AtomIEx.run_test(\""
+      text = text.concat(path).concat("\",").concat(line_num).concat(")\n")
+      @runCommand(text)
 
   printHelp: ->
-    editor = atom.workspace.getActiveEditor()
-    cursorPosition = editor.getCursorBufferPosition()
-    [row, col] = cursorPosition.toArray()
-    begRegex = new RegExp("[\\(,\\s]")
-    endRegex = new RegExp(".*?[\\(,\\s\.]")
-    endRange = [new Point(row, col + 1), new Point(row, col + 10000)]
-    begRange = [new Point(row, 0), new Point(row, col)]
-    tailIndex = -1
-    headIndex = -1
+    editor = atom.workspace.getActiveTextEditor()
+    if editor
+      cursorPosition = editor.getCursorBufferPosition()
+      [row, col] = cursorPosition.toArray()
+      begRegex = new RegExp("[\\(,\\s]")
+      endRegex = new RegExp(".*?[\\(,\\s\.]")
+      endRange = [new Point(row, col + 1), new Point(row, col + 10000)]
+      begRange = [new Point(row, 0), new Point(row, col)]
+      tailIndex = -1
+      headIndex = -1
 
-    editor.scanInBufferRange(endRegex, endRange,
-      (match, matchText, range, stop, replace) ->
-        tailIndex = match.match.index + match.match[0].length - 1
-    )
+      editor.scanInBufferRange(endRegex, endRange,
+        (match, matchText, range, stop, replace) ->
+          tailIndex = match.match.index + match.match[0].length - 1
+      )
 
-    editor.backwardsScanInBufferRange(begRegex, begRange,
-      (match, matchText, range, stop, replace) ->
-        headIndex = match.match.index
-    )
+      editor.backwardsScanInBufferRange(begRegex, begRange,
+        (match, matchText, range, stop, replace) ->
+          headIndex = match.match.index
+      )
 
-    text = editor.getText().substring(headIndex, tailIndex)
-    @runCommand("h " + text + "\n")
+      text = editor.getText().substring(headIndex, tailIndex)
+      @runCommand("h " + text + "\n")
 
   prettyPrint: ->
     @runCommand("IO.puts(v(-1))\n")
@@ -221,7 +223,7 @@ module.exports = Iex =
     pane.activateItem item
 
   pipeIEx: ->
-    editor = atom.workspace.getActiveEditor()
+    editor = atom.workspace.getActiveTextEditor()
     if editor
       action = 'selection'
       stream = switch action
