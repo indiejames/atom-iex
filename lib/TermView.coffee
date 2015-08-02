@@ -60,6 +60,7 @@ class TermView extends View
     Task.once processPath, fs.absolute(projectPath), args
 
   initialize: (@state)->
+    @shell_stdout_history = []
     iexSrcPath = atom.packages.resolvePackagePath("iex") + "/elixir_src/iex.exs"
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
@@ -84,7 +85,12 @@ class TermView extends View
     }
 
     @ptyProcess = @forkPtyProcess args
-    @ptyProcess.on 'iex:data', (data) => @term.write data
+    # capture output from the child process (shell)
+    @ptyProcess.on 'iex:data', (data) =>
+      @shell_stdout_history.push data
+      if @shell_stdout_history.length > 10
+          @shell_stdout_history = @shell_stdout_history.slice(-10)
+      @term.write data
     @ptyProcess.on 'iex:exit', (data) => @destroy()
 
     colorsArray = (colorCode for colorName, colorCode of colors)

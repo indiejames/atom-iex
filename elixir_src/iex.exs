@@ -33,6 +33,16 @@ defmodule AtomIEx do
     IO.puts rval
   end
 
+  @doc "Get file and line of function definition"
+  def get_file_and_line(module, func) do
+    file = to_string(module.__info__(:compile)[:source])
+    code_docs = Code.get_docs(module, :all)[:docs]
+    #line_num = List.key_find(code_docs, )
+    entry = Enum.find(code_docs, fn(x) -> elem(x, 0) |> elem(0) == func end)
+    line_num = elem(entry, 1)
+    "#{module}.#{func} - #{file}:#{line_num}"
+  end
+
   defmodule Comment do
     @moduledoc "Provides a 'comment' macro to allow blocks of code to be ignored
     to facilitate running them as small tests in IEx during interactive

@@ -1,7 +1,8 @@
-{CompositeDisposable, Point} = require 'atom'
+{CompositeDisposable, Point, Task} = require 'atom'
 path = require 'path'
 TermView = require './TermView'
 os = require 'os'
+spawn = require('child_process').spawn
 
 {SHELL, HOME}=process.env
 
@@ -90,6 +91,7 @@ module.exports = Iex =
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pretty-print': => @prettyPrint()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:gotoDefinition': => @gotoDefinition()
     @subscriptions.add atom.workspace.onDidChangeActivePane(paneChanged)
     console.log "activate iex"
 
@@ -135,9 +137,20 @@ module.exports = Iex =
         pane.activateItem item
       else
         item = @focusedTerminal
-
       item.term.send(cmd)
       item.term.focus()
+
+
+  readTerminalText: ->
+    if @focusedTerminal
+      if Array.isArray @focusedTerminal
+        [pane, item] = @focusedTerminal
+        pane.activateItem item
+      else
+        item = @focusedTerminal
+      text =  item.shell_stdout_history.join " "
+      console.log text
+      text
 
   resetIEx: ->
     text = 'AtomIEx.reset\n'
@@ -163,6 +176,71 @@ module.exports = Iex =
       text = "AtomIEx.run_test(\""
       text = text.concat(path).concat("\",").concat(line_num).concat(")\n")
       @runCommand(text)
+
+  gotoDefinition: ->
+    editor = atom.workspace.getActiveTextEditor()
+    if editor
+      cursorPosition = editor.getCursorBufferPosition()
+      [row, col] = cursorPosition.toArray()
+      begRegex = new RegExp("[\\(,\\s]")
+      endRegex = new RegExp(".*?[\\(,\\s\.]")
+      endRange = [new Point(row, col + 1), new Point(row, col + 10000)]
+      begRange = [new Point(row, 0), new Point(row, col)]
+      tailIndex = -1
+      headIndex = -1
+
+      editor.scanInBufferRange(endRegex, endRange,
+        (match, matchText, range, stop, replace) ->
+          tailIndex = match.match.index + match.match[0].length - 1
+      )
+
+      editor.backwardsScanInBufferRange(begRegex, begRange,
+        (match, matchText, range, stop, replace) ->
+          headIndex = match.match.index
+      )
+
+      text = editor.getText().substring(headIndex, tailIndex)
+      moduleRegex = /^(.*)\.(.*?)[\s\(]/i
+      moduleMatch = moduleRegex.exec text
+      if moduleMatch
+        module = moduleMatch[1]
+        func = moduleMatch[2]
+        cmd = "AtomIEx.get_file_and_line(" + module + ", :" + func + ")\n"
+        done = false
+        file = null
+        lineNum = null
+        fileLineRegex = /".*? - (.*?):(.*)"/i
+        start = new Date().getTime()
+        termView = @termViews[0]
+        mixFile = termView.getMixFilePath
+        iexSrcPath = atom.packages.resolvePackagePath("iex") + "/elixir_src/iex.exs"
+        cwd = "/Users/jnorton/Elixir/calculator"
+        iexp = spawn('iex', ['-r', iexSrcPath, '-S', 'mix'], {cwd: cwd})
+        outCount = 0
+        iexp.stdout.on 'data', (data) =>
+          console.log('stdout: ' + data)
+          outCount += 1
+          if outCount == 3
+            iexp.stdin.write cmd
+          if outCount == 4
+            match = fileLineRegex.exec data
+            if match
+              console.log("MATCH")
+              console.log(match[1])
+              file = match[1]
+              lineNum = parseInt(match[2], 10) - 1
+              options = {}
+              options.initialLine = lineNum
+              iexp.kill('SIGKILL')
+              atom.workspace.open(file, options)
+            else
+              console.log("NO MATCH")
+              console.log(data)
+
+        iexp.stderr.on 'data', (data) =>
+          console.log('stderr: ' + data);
+        iexp.on 'close', (code) =>
+          console.log('child process exited with code ' + code);
 
   printHelp: ->
     editor = atom.workspace.getActiveTextEditor()
