@@ -33,6 +33,14 @@ defmodule AtomIEx do
     IO.puts rval
   end
 
+  @doc "Get file and line of a module definition"
+  def get_file_and_line(module) do
+    file = to_string(module.__info__(:compile)[:source])
+    code_docs = Code.get_docs(module, :moduledoc)
+    line_num = elem(code_docs, 0)
+    "#{module} - #{file}:#{line_num}"
+  end
+
   @doc "Get file and line of function definition"
   def get_file_and_line(module, func) do
     file = to_string(module.__info__(:compile)[:source])
