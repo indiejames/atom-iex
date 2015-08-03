@@ -181,10 +181,11 @@ module.exports = Iex =
     if editor
       cursorPosition = editor.getCursorBufferPosition()
       [row, col] = cursorPosition.toArray()
-      begRegex = new RegExp("[\\(,\\s]")
-      endRegex = new RegExp(".*?[\\(,\\s\.]")
-      endRange = [new Point(row, col + 1), new Point(row, col + 10000)]
-      begRange = [new Point(row, 0), new Point(row, col)]
+      # begRegex = new RegExp("[\\n\\(,\\s]")
+      begRegex = /(\n|\s|,|\(|^.)/
+      endRegex = /.*?[\(,\s\.$]/
+      endRange = [[row, col + 1], [row, col + 10000]]
+      begRange = [[row, 0], [row, col]]
       tailIndex = -1
       headIndex = -1
 
@@ -194,9 +195,14 @@ module.exports = Iex =
       )
 
       editor.backwardsScanInBufferRange(begRegex, begRange,
-        (match, matchText, range, stop, replace) ->
+        (match, matchText, range, stop, replace) =>
           headIndex = match.match.index
       )
+
+      console.log("HEAD INDEX...")
+      console.log(headIndex)
+      console.log("TAIL INDEX...")
+      console.log(tailIndex)
 
       editor.getText().substring(headIndex, tailIndex)
 
@@ -207,7 +213,7 @@ module.exports = Iex =
       editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
       cwd = atom.project.getPaths()[0] or editorPath
 
-      moduleFuncRegex = /^(.*?)\.(.*?)$/i
+      moduleFuncRegex = /^(.*?)\.(.*?)$/
       moduleMatch = moduleFuncRegex.exec text
       if moduleMatch
         module = moduleMatch[1]
@@ -220,7 +226,7 @@ module.exports = Iex =
       done = false
       file = null
       lineNum = null
-      fileLineRegex = /".*? - (.*?):(.*)"/i
+      fileLineRegex = /".*? - (.*?):(.*)"/
       iexSrcPath = atom.packages.resolvePackagePath("iex") + "/elixir_src/iex.exs"
       iexp = spawn('iex', ['-r', iexSrcPath, '-S', 'mix'], {cwd: cwd})
       outCount = 0
