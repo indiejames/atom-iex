@@ -54,6 +54,23 @@ class TermView extends View
     opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
     super
 
+  applyStyle: ->
+    # remove background color in favor of the atom background
+    @term.element.style.background = null
+    @term.element.style.fontFamily = (
+      @opts.fontFamily or
+      atom.config.get('editor.fontFamily') or
+      # (Atom doesn't return a default value if there is none)
+      # so we use a poor fallback
+      "monospace"
+    )
+    # Atom returns a default for fontSize
+    @term.element.style.fontSize = (
+      @opts.fontSize or
+      atom.config.get('editor.fontSize')
+    ) + "px"
+
+
   forkPtyProcess: (args=[])->
     processPath = require.resolve './pty'
     projectPath = atom.project.getPaths()[0] ? '~'
@@ -104,6 +121,7 @@ class TermView extends View
 
     @input "#{runCommand}#{os.EOL}" if runCommand
     term.focus()
+    @applyStyle()
     @attachEvents()
     @resizeToPane()
 
@@ -116,7 +134,6 @@ class TermView extends View
   focusTerm: ->
     @term.element.focus()
     @term.focus()
-
 
   onActivePaneItemChanged: (activeItem) =>
     console.log "Checking to see if this pane selected"
@@ -143,6 +160,9 @@ class TermView extends View
     @vars = @titleVars()
     titleTemplate = @opts.titleTemplate or "({{ bashName }})"
     renderTemplate titleTemplate, @vars
+
+  getIconName: ->
+    "terminal"
 
   attachEvents: ->
     @resizeToPane = @resizeToPane.bind this
@@ -196,15 +216,29 @@ class TermView extends View
     @term.resize cols, rows
     #atom.workspaceView.getActivePaneView().css overflow: 'auto'
 
+  # getDimensions: ->
+  #   fakeCol = $("<span id='colSize'>m</span>").css visibility: 'hidden'
+  #   if @term
+  #     @find('.terminal').append fakeCol
+  #     fakeCol = @find(".terminal span#colSize")
+  #     cols = Math.floor (@width() / fakeCol.width()) or 9
+  #     #cols = Math.floor (@width() / 10)  or 9
+  #     rows = (Math.floor (@height() / fakeCol.height()) - 2) or 16
+  #     #rows = Math.floor (@height() / 14)  or 16
+  #     fakeCol.remove()
+  #   else
+  #     cols = Math.floor @width() / 7
+  #     rows = Math.floor @height() / 14
+  #
+  #   {cols, rows}
+
   getDimensions: ->
-    fakeCol = $("<span id='colSize'>m</span>").css visibility: 'hidden'
+    fakeRow = $("<div><span>&nbsp;</span></div>").css visibility: 'hidden'
     if @term
-      @find('.terminal').append fakeCol
-      fakeCol = @find(".terminal span#colSize")
+      @find('.terminal').append fakeRow
+      fakeCol = fakeRow.children().first()
       cols = Math.floor (@width() / fakeCol.width()) or 9
-      #cols = Math.floor (@width() / 10)  or 9
-      rows = (Math.floor (@height() / fakeCol.height()) - 2) or 16
-      #rows = Math.floor (@height() / 14)  or 16
+      rows = Math.floor (@height() / fakeCol.height()) or 16
       fakeCol.remove()
     else
       cols = Math.floor @width() / 7

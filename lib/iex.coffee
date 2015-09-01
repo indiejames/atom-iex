@@ -120,6 +120,8 @@ module.exports = Iex =
       shellArguments: null
       titleTemplate : 'IEx'
       cursorBlink   : atom.config.get('iex.cursorBlink')
+      fontFamily    : atom.config.get 'iex.fontFamily'
+      fontSize      : atom.config.get 'iex.fontSize'
       colors        : @getColors()
 
     termView = new TermView opts
