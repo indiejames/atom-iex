@@ -76,22 +76,7 @@ Adding these will provide the following:
 | `cmd + alt + p` | `iex:pretty-print` | Pretty print the last evaluated expression |
 
 ### Fonts
-You can set the font size by adding the following to your Atom stylesheet.
-`Atom menu - Open your stylesheet)`
-Change the font, font-size, and heights as desired.
-
-    .iex {
-      .terminal {
-        font-family: Menlo, Monaco, Inconsolata, monospace;
-        font-size: 14px;
-
-         div {
-          height: 18px;
-          line-height: 18px;
-
-        }
-      }
-    }
+The REPL defaults to using the same font family/size as Atom. Independent settings for the REPL will be available in the next release.
 
 ### Contributions
 
