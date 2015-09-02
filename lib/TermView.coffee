@@ -4,7 +4,7 @@ os          = require 'os'
 fs          = require 'fs-plus'
 uuid        = require 'uuid'
 
-Terminal    = require 'atom-term.js'
+Terminal    = require 'atom-iex-term.js'
 
 keypather   = do require 'keypather'
 
