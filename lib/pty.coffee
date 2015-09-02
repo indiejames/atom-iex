@@ -1,27 +1,33 @@
 # from atom/terminal to reduce cpu usage
-#pty = require 'pty.js'
-pty = require 'child_pty'
+pty = require 'pty.js'
 
 module.exports = (ptyCwd, args) ->
   callback = @async()
+  # if sh
+  #     shell = sh
+  # else
+  #     if process.platform is 'win32'
+  #       path = require 'path'
+  #       shell = path.resolve(process.env.SystemRoot, 'WindowsPowerShell', 'v1.0', 'powershell.exe')
+  #     else
   shell = process.env.SHELL
+
   cols = 80
   rows = 30
 
-  ptyProcess = pty.spawn shell, args,
+  ptyProcess = pty.fork shell, args,
     name: 'xterm-256color'
     cols: cols
     rows: rows
     cwd: ptyCwd
+    env: process.env
 
-  ptyProcess.stdout.on 'data', (data) ->
-    sdata = data.toString("utf8")
-    emit('iex:data', sdata)
+  ptyProcess.on 'data', (data) -> emit('iex:data', data)
   ptyProcess.on 'exit', ->
     emit('iex:exit')
     callback()
 
   process.on 'message', ({event, cols, rows, text}={}) ->
     switch event
-      when 'resize' then ptyProcess.stdout.resize({columns: cols, rows: rows})
-      when 'input' then ptyProcess.stdin.write(text)
+      when 'resize' then ptyProcess.resize(cols, rows)
+      when 'input' then ptyProcess.write(text)

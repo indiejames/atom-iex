@@ -4,7 +4,7 @@ os          = require 'os'
 fs          = require 'fs-plus'
 uuid        = require 'uuid'
 
-Terminal    = require 'atom-iex-term.js'
+Terminal    = require 'atom-term.js'
 
 keypather   = do require 'keypather'
 
@@ -30,7 +30,6 @@ getMixFilePath = ()->
         mixPath = path.join(projectPath, 'mix.exs')
         return
   mixPath
-
 
 renderTemplate = (template, data)->
   vars = Object.keys data
@@ -70,11 +69,11 @@ class TermView extends View
       atom.config.get('editor.fontSize')
     ) + "px"
 
-
   forkPtyProcess: (args=[])->
     processPath = require.resolve './pty'
     projectPath = atom.project.getPaths()[0] ? '~'
     Task.once processPath, fs.absolute(projectPath), args
+    # TODO - try switching back to pty.js to see if it fixes the backspace issue
 
   initialize: (@state)->
     @shell_stdout_history = []
