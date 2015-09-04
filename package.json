@@ -1,7 +1,7 @@
 {
   "name": "iex",
   "main": "./lib/iex",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "description": "Run an Elixir IEx (REPL) session in an Atom window.",
   "repository": "https://github.com/indiejames/atom-iex",
   "license": "MIT",
