@@ -179,7 +179,9 @@ class TermView extends View
     @focus()
 
   paste: ->
-    @input atom.clipboard.read()
+    try
+      @input atom.clipboard.read()
+    catch error
 
   copy: ->
     if @term._selected  # term.js visual mode selections
