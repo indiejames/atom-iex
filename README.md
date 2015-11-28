@@ -47,7 +47,7 @@ Customizing Key Bindings:
   'cmd-alt-a': 'iex:run-all-tests'
   'cmd-alt-p': 'iex:pretty-print'
 
-'.editor':
+'atom-text-editor':
   'cmd-alt-h': 'iex:help'
   'cmd-alt-o': 'iex:gotoDefinition'
   'cmd-alt-x': 'iex:run-tests'
