@@ -147,7 +147,10 @@ class TermView extends View
     @ptyProcess.send event: 'input', text: data
 
   resize: (cols, rows) ->
-    @ptyProcess.send {event: 'resize', rows, cols}
+    try
+      @ptyProcess.send {event: 'resize', rows, cols}
+    catch error
+      console.log error
 
   titleVars: ->
     bashName: last @opts.shell.split '/'
@@ -215,23 +218,7 @@ class TermView extends View
 
     @resize cols, rows
     @term.resize cols, rows
-    #atom.workspaceView.getActivePaneView().css overflow: 'auto'
-
-  # getDimensions: ->
-  #   fakeCol = $("<span id='colSize'>m</span>").css visibility: 'hidden'
-  #   if @term
-  #     @find('.terminal').append fakeCol
-  #     fakeCol = @find(".terminal span#colSize")
-  #     cols = Math.floor (@width() / fakeCol.width()) or 9
-  #     #cols = Math.floor (@width() / 10)  or 9
-  #     rows = (Math.floor (@height() / fakeCol.height()) - 2) or 16
-  #     #rows = Math.floor (@height() / 14)  or 16
-  #     fakeCol.remove()
-  #   else
-  #     cols = Math.floor @width() / 7
-  #     rows = Math.floor @height() / 14
-  #
-  #   {cols, rows}
+    atom.views.getView(atom.workspace).style.overflow = 'visible'
 
   getDimensions: ->
     fakeRow = $("<div><span>&nbsp;</span></div>").css visibility: 'hidden'
@@ -244,7 +231,6 @@ class TermView extends View
     else
       cols = Math.floor @width() / 7
       rows = Math.floor @height() / 14
-
     {cols, rows}
 
   activate: ->
