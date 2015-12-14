@@ -19,6 +19,9 @@ module.exports = Iex =
     scrollback:
       type: 'integer'
       default: 1000
+    startPhoenixServer:
+      type: 'boolean'
+      default: no
     cursorBlink:
       type: 'boolean'
       default: yes

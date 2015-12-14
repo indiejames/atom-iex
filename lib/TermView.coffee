@@ -88,7 +88,7 @@ class TermView extends View
     if mixPath
       file_str = fs.readFileSync(mixPath, {"encoding": "utf-8"})
       phoenix_str = ""
-      if file_str.match(/applications.*:phoenix/g)
+      if atom.config.get('iex.startPhoenixServer') && file_str.match(/applications.*:phoenix/g)
         phoenix_str = " phoenix.server"
         console.log phoenix_str
       args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix" + phoenix_str]
