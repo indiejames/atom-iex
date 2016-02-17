@@ -16,12 +16,9 @@ module.exports = Iex =
   termViews: []
   focusedTerminal: off
   config:
-    iExExecutablePath:
+    iexExecutablePath:
       type: 'string'
       default: 'iex'
-    mixPath:
-      type:'string'
-      default: '/usr/local/bin'
     scrollback:
       type: 'integer'
       default: 1000
