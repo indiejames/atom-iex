@@ -81,7 +81,7 @@ class TermView extends View
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     new_id = generateUUID()
-    iexPath = atom.config.get('iex.iExExecutablePath')
+    iexPath = atom.config.get('iex.iexExecutablePath')
     args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath]
     mixPath = getMixFilePath()
     # assume mix file is at top level
