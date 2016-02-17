@@ -81,7 +81,7 @@ class TermView extends View
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     new_id = generateUUID()
-    iexPath = 'iex'
+    iexPath = atom.config.get('iex.iExExecutablePath')
     args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath]
     mixPath = getMixFilePath()
     # assume mix file is at top level
@@ -90,7 +90,6 @@ class TermView extends View
       phoenix_str = ""
       if atom.config.get('iex.startPhoenixServer') && file_str.match(/applications.*:phoenix/g)
         phoenix_str = " phoenix.server"
-        console.log phoenix_str
       args = ["-l", "-c", iexPath + " --sname IEX-" + new_id + " -r " + iexSrcPath + " -S mix" + phoenix_str]
 
     @term = term = new Terminal {
@@ -135,12 +134,7 @@ class TermView extends View
     @term.focus()
 
   onActivePaneItemChanged: (activeItem) =>
-    console.log "Checking to see if this pane selected"
-    console.log activeItem
-    console.log activeItem.items.length
-    console.log this
     if (activeItem && activeItem.items.length == 1 && activeItem.items[0] == this)
-      console.log "Focusing term"
       @focus()
 
   input: (data) ->
@@ -231,6 +225,8 @@ class TermView extends View
     else
       cols = Math.floor @width() / 7
       rows = Math.floor @height() / 14
+
+    cols = cols - 2
     {cols, rows}
 
   activate: ->

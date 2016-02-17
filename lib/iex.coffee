@@ -16,6 +16,12 @@ module.exports = Iex =
   termViews: []
   focusedTerminal: off
   config:
+    iExExecutablePath:
+      type: 'string'
+      default: 'iex'
+    mixPath:
+      type:'string'
+      default: '/usr/local/bin'
     scrollback:
       type: 'integer'
       default: 1000
@@ -95,9 +101,9 @@ module.exports = Iex =
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:run-test': => @runTest()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:reset': => @resetIEx()
     @subscriptions.add atom.commands.add 'atom-workspace', 'iex:pretty-print': => @prettyPrint()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:gotoDefinition': => @gotoDefinition()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:goto-definition': => @gotoDefinition()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'iex:say-yes': => @sayYes()
     @subscriptions.add atom.workspace.onDidChangeActivePane(paneChanged)
-    console.log "activate iex"
 
   deactivate: ->
     @termViews.forEach (view)-> view.deactivate()
@@ -204,17 +210,10 @@ module.exports = Iex =
           headIndex = match.match.index
       )
 
-      console.log("HEAD INDEX...")
-      console.log(headIndex)
-      console.log("TAIL INDEX...")
-      console.log(tailIndex)
-
       editor.getText().substring(headIndex, tailIndex)
 
   gotoDefinition: ->
       text = @getSelectedSymbol()
-      console.log("SELECTED SYMBOL....")
-      console.log(text)
       editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
       cwd = atom.project.getPaths()[0] or editorPath
 
@@ -226,8 +225,9 @@ module.exports = Iex =
         cmd = "AtomIEx.get_file_and_line(" + module.trim() + ", :" + func + ")\n"
       else
         cmd = "AtomIEx.get_file_and_line(" + text.trim() + ")\n"
-      console.log("CMD....")
-      console.log(cmd)
+
+      env = process.env
+      env.path = env.path + ""
       done = false
       file = null
       lineNum = null
@@ -271,6 +271,9 @@ module.exports = Iex =
 
   prettyPrint: ->
     @runCommand("IO.puts(v(-1))\n")
+
+  sayYes: ->
+    @runCommand("Y\n")
 
   splitTerm: (direction)->
       openPanesInSameSplit = atom.config.get 'iex.openPanesInSameSplit'

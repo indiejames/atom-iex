@@ -24,6 +24,7 @@
   'cmd-alt-x': 'iex:run-tests'
   'cmd-alt-j': 'iex:run-test'
   'cmd-alt-b': 'iex:pipe'
+  'cmd-alt-y': 'iex:say-yes'
 
 '.iex':
   'cmd-v': 'iex:paste'
