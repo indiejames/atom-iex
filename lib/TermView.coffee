@@ -46,11 +46,11 @@ class TermView extends View
     @div class: 'iex', click: 'click'
 
   constructor: (@opts={})->
-    opts.shell = process.env.SHELL or 'bash'
-    opts.shellArguments or= ''
+    @opts.shell = process.env.SHELL or 'bash'
+    @opts.shellArguments or= ''
 
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
-    opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
+    @opts.cwd = @opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
     super
 
   applyStyle: ->
